@@ -1,0 +1,78 @@
+{
+  "variables": {
+    "provisioner": "provisionerless",
+    "provisioner_version": "",
+    "iso_url": "../../iso/OSX_InstallESD_10.7_11A511.dmg",
+    "iso_checksum": "51068c57281bdc78c3564a16218468656760905e",
+    "autologin_vagrant_user": "",
+    "install_xcode_cli_tools": "true"
+  },
+  "builders": [
+    {
+      "vm_name": "osx107",
+      "type": "vmware-iso",
+      "guest_os_type": "darwin11-64",
+      "iso_url": "{{ user `iso_url` }}",
+      "iso_checksum": "{{ user `iso_checksum` }}",
+      "iso_checksum_type": "sha1",
+      "ssh_username": "vagrant",
+      "ssh_password": "vagrant",
+      "ssh_wait_timeout": "10000s",
+      "tools_upload_flavor": "darwin",
+      "boot_wait": "2s",
+      "disk_size": 20480,
+      "shutdown_command": "echo 'vagrant'|sudo -S shutdown -h now",
+      "skip_compaction": true,
+      "ssh_password": "vagrant",
+      "vmx_data": {
+        "cpuid.coresPerSocket": "1",
+        "memsize": "2048",
+        "numvcpus": "1",
+        "firmware": "efi",
+        "keyboardAndMouseProfile": "macProfile",
+        "smc.present": "TRUE",
+        "hpet0.present": "TRUE",
+        "ich7m.present": "TRUE",
+        "ehci.present": "TRUE",
+        "usb.present": "TRUE"
+      }
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "file",
+      "destination": "/private/tmp/kcpassword",
+      "source": "script/support/kcpassword"
+    },
+    {
+      "type": "shell",
+      "environment_vars": [
+        "PROVISIONER={{user `provisioner`}}",
+        "PROVISIONER_VERSION={{user `provisioner_version`}}",
+        "INSTALL_XCODE_CLI_TOOLS={{user `install_xcode_cli_tools`}}"
+      ],
+      "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E -S bash '{{ .Path }}'",
+      "scripts": [
+        "script/vagrant.sh",
+        "script/xcode-cli-tools.sh",
+        "script/provisioner.sh",
+        "script/vmware.sh"
+      ]
+    },
+    {
+      "type": "shell",
+      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
+      "inline": [
+        "[ -z \"{{user `autologin_vagrant_user`}}\" ] && exit",
+        "echo \"Enabling automatic GUI login for the 'vagrant' user..\"",
+        "cp /private/tmp/kcpassword /private/etc/kcpassword",
+        "/usr/bin/defaults write /Library/Preferences/com.apple.loginwindow autoLoginUser vagrant"
+      ]
+    }
+  ],
+  "post-processors": [{
+    "type": "vagrant",
+    "keep_input_artifact": false,
+    "output": "../../{{.Provider}}/osx107-{{user `provisioner`}}{{user `provisioner_version`}}.box"
+  }]
+}

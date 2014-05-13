@@ -1,0 +1,43 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+    config.vm.define "vagrant-osx107-desktop"
+    config.vm.box = "osx107-desktop"
+
+    # Berkshelf
+    # config.berkshelf.enabled = true
+
+    # Shell - Hello World
+    # config.vm.provision :shell, :inline => "C:\\vagrant\\scripts\\HelloWorld.bat"
+
+    config.vm.provider :vmware_fusion do |v, override|
+        v.gui = true
+        v.vmx["memsize"] = "2048"
+        v.vmx["numvcpus"] = "1"
+        v.vmx["firmware"] = "efi"
+        v.vmx["cpuid.coresPerSocket"] = "1"
+        v.vmx["keyboardAndMouseProfile"] = "macProfile"
+        v.vmx["smc.present"] = "TRUE"
+        v.vmx["hpet0.present"] = "TRUE"
+        v.vmx["ich7m.present"] = "TRUE"
+        v.vmx["ehci.present"] = "TRUE"
+        v.vmx["usb.present"] = "TRUE"
+        v.vmx["scsi0.virtualDev"] = "lsilogic"
+    end
+
+    config.vm.provider :vmware_workstation do |v, override|
+        v.gui = true
+        v.vmx["memsize"] = "2048"
+        v.vmx["numvcpus"] = "1"
+        v.vmx["firmware"] = "efi"
+        v.vmx["cpuid.coresPerSocket"] = "1"
+        v.vmx["keyboardAndMouseProfile"] = "macProfile"
+        v.vmx["smc.present"] = "TRUE"
+        v.vmx["hpet0.present"] = "TRUE"
+        v.vmx["ich7m.present"] = "TRUE"
+        v.vmx["ehci.present"] = "TRUE"
+        v.vmx["usb.present"] = "TRUE"
+        v.vmx["scsi0.virtualDev"] = "lsilogic"
+    end
+end
