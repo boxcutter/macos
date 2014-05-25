@@ -65,15 +65,15 @@ $(foreach i,$(SHORTCUT_TARGETS),$(eval $(call SHORTCUT,$(i))))
 
 ###############################################################################
 
-$(MAC_OSX_10_7_LION_BOOT_DMG): $(MAC_OSX_10_7_LION_INSTALLER)
+dmg/$(MAC_OSX_10_7_LION_BOOT_DMG): $(MAC_OSX_10_7_LION_INSTALLER)
 	mkdir -p dmg
 	sudo prepare_iso/prepare_iso.sh $(MAC_OSX_10_7_LION_INSTALLER) dmg
 
-$(MAC_OSX_10_8_MOUNTAIN_LION_BOOT_DMG): $(MAC_OSX_10_8_MOUNTAIN_LION_INSTALLER)
+dmg/$(MAC_OSX_10_8_MOUNTAIN_LION_BOOT_DMG): $(MAC_OSX_10_8_MOUNTAIN_LION_INSTALLER)
 	mkdir -p dmg
 	sudo prepare_iso/prepare_iso.sh $(MAC_OSX_10_8_MOUNTAIN_LION_INSTALLER) dmg
 
-$(MAC_OSX_10_9_MAVERICKS_BOOT_DMG): $(MAC_OSX_10_9_MAVERICKS_INSTALLER)
+dmg/$(MAC_OSX_10_9_MAVERICKS_BOOT_DMG): $(MAC_OSX_10_9_MAVERICKS_INSTALLER)
 	mkdir -p dmg
 	sudo prepare_iso/prepare_iso.sh $(MAC_OSX_10_9_MAVERICKS_INSTALLER) dmg
 
