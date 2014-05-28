@@ -38,7 +38,7 @@ newly-built box with vagrant and for logging in using just one command to
 do exploratory testing.  For example, to do exploratory testing
 on the VirtualBox training environmnet, run the following command:
 
-    make ssh-box/virtualbox/win2008r2-standard-nocm.box
+    make ssh-box/virtualbox/osx109-nocm.box
     
 Upon logout `make ssh-*` will automatically de-register the box as well.
 
