@@ -1,0 +1,5 @@
+caroline_osx := /Volumes/Storage/osx
+MAC_OSX_10_7_LION_INSTALLER := $(caroline_osx)/OS\ X\ Lion/InstallESD.dmg
+MAC_OSX_10_8_MOUNTAIN_LION_INSTALLER := $(caroline_osx)/OS\ X\ Mountain\ Lion/InstallESD.dmg
+MAC_OSX_10_9_MAVERICKS_INSTALLER := $(caroline_osx)/OS\ X\ Mavericks/Install\ OS\ X\ Mavericks.app
+
