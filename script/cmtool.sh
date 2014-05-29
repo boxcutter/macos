@@ -20,10 +20,10 @@ install_chef()
 {
     if [[ ${PROVISIONER_VERSION} == 'latest' ]]; then
         echo "Installing latest Chef version"
-        curl -L https://www.opscode.com/chef/install.sh | sh -- -p chef
+        curl -L https://www.opscode.com/chef/install.sh | sh --
     else
         echo "Installing Chef version ${PROVISIONER_VERSION}"
-        curl -L https://www.opscode.com/chef/install.sh | sh -s -- -v $PROVISIONER_VERSION -p chef
+        curl -L https://www.opscode.com/chef/install.sh | sh -s -- -v $PROVISIONER_VERSION
     fi
 }
 
