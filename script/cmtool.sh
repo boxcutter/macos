@@ -2,15 +2,15 @@
 
 # Set CM & CM_VERSION inside of Packer's template:
 #
-# Valid values for PROVISIONER are:
+# Valid values for CM are:
 #   'nocm'     -- build a box without a config management tool
 #   'chef'     -- build a box with Chef 
 #   'chefdk'   -- build a box with the Chef DK
 #   'salt'     -- build a box with Salt
 #   'puppet'   -- build a box with Puppet
 #
-# When $PROVISIONER != 'provisionerless' valid options for
-# $PROVISIONER_VERSION are:
+# When $CM != 'nocm' valid options for
+# $CM_VERSION are:
 #   'x.y.z'    -- build a box with version x.y.z of Chef
 #   'x.y.z'    -- build a box with version x.y.z of the Chef DK
 #   'x.y'      -- build a box with version x.y Salt
@@ -18,23 +18,23 @@
 
 install_chef()
 {
-    if [[ ${PROVISIONER_VERSION} == 'latest' ]]; then
+    if [[ ${CM_VERSION} == 'latest' ]]; then
         echo "Installing latest Chef version"
         curl -L https://www.opscode.com/chef/install.sh | sh --
     else
-        echo "Installing Chef version ${PROVISIONER_VERSION}"
-        curl -L https://www.opscode.com/chef/install.sh | sh -s -- -v $PROVISIONER_VERSION
+        echo "Installing Chef version ${CM_VERSION}"
+        curl -L https://www.opscode.com/chef/install.sh | sh -s -- -v $CM_VERSION
     fi
 }
 
 install_chef_dk()
 {
-    if [[ ${PROVISIONER_VERSION} == 'latest' ]]; then
+    if [[ ${CM_VERSION} == 'latest' ]]; then
         echo "Installing latest Chef version"
         curl -L https://www.opscode.com/chef/install.sh | sh -- -p chefdk
     else
-        echo "Installing Chef version ${PROVISIONER_VERSION}"
-        curl -L https://www.opscode.com/chef/install.sh | sh -s -- -v $PROVISIONER_VERSION -p chefdk
+        echo "Installing Chef version ${CM_VERSION}"
+        curl -L https://www.opscode.com/chef/install.sh | sh -s -- -v $CM_VERSION -p chefdk
     fi
 }
 
