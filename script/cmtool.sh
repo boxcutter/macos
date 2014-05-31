@@ -27,14 +27,19 @@ install_chef()
     fi
 }
 
-install_chef_dk()
+install_chefdk()
 {
+    echo "==> Installing Chef Development Kit"
     if [[ ${CM_VERSION} == 'latest' ]]; then
-        echo "Installing latest Chef version"
-        curl -L https://www.opscode.com/chef/install.sh | sh -- -p chefdk
+        echo "==> Installing latest Chef Development Kit version"
+        curl -L https://www.opscode.com/chef/install.sh | sh -s -- -P chefdk
     else
-        echo "Installing Chef version ${CM_VERSION}"
-        curl -L https://www.opscode.com/chef/install.sh | sh -s -- -v $CM_VERSION -p chefdk
+        echo "==> Installing Chef Development Kit version ${CM_VERSION}"
+        curl -L https://www.opscode.com/chef/install.sh | sh -s -- -P chefdk -v $CM_VERSION
+    fi
+    if [[ ${CM_SET_PATH:-} == 'true' ]]; then
+      echo "Automatically setting vagrant PATH to Chef Development Kit"
+      echo 'export PATH="/opt/chefdk/embedded/bin:$PATH"' >> /Users/vagrant/.bash_profile
     fi
 }
 
