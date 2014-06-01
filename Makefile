@@ -54,9 +54,15 @@ test: $(TEST_BOX_FILES)
 # Target shortcuts
 define SHORTCUT
 
-$(1): $(VMWARE_BOX_DIR)/$(1)$(BOX_SUFFIX)
+vmware/$(1): $(VMWARE_BOX_DIR)/$(1)$(BOX_SUFFIX)
 
-test-$(1): test-$(VMWARE_BOX_DIR)/$(1)$(BOX_SUFFIX)
+test-vmware/$(1): test-$(VMWARE_BOX_DIR)/$(1)$(BOX_SUFFIX)
+
+ssh-vmware/$(1): ssh-$(VMWARE_BOX_DIR)/$(1)$(BOX_SUFFIX)
+
+$(1): vmware/$(1)
+
+test-$(1): test-vmware/$(1)
 
 endef
 
