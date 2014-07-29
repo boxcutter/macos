@@ -57,7 +57,8 @@
         "script/update.sh",
         "script/xcode-cli-tools.sh",
         "script/cmtool.sh",
-        "script/vmware.sh"
+        "script/vmware.sh",
+        "script/add-network-interface-detection.sh"
       ]
     },
     {
