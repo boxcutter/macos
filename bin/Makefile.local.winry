@@ -1,0 +1,5 @@
+winry_osx := /Volumes/Storage/software/osx
+MAC_OSX_10_7_LION_INSTALLER := $(winry_osx)/OS\ X\ Lion/InstallESD.dmg
+MAC_OSX_10_8_MOUNTAIN_LION_INSTALLER := $(winry_osx)/OS\ X\ Mountain\ Lion/InstallESD.dmg
+MAC_OSX_10_9_MAVERICKS_INSTALLER := $(winry_osx)/OS\ X\ Mavericks/Install\ OS\ X\ Mavericks.app
+
