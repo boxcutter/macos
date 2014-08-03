@@ -44,7 +44,7 @@ VMWARE_BUILDER := vmware-iso
 CURRENT_DIR := $(shell pwd)
 SOURCES := $(wildcard script/*.sh)
 
-.PHONY: all list clean test
+.PHONY: all list validate clean test
 
 all: $(BOX_FILES)
 
@@ -116,6 +116,12 @@ $(VMWARE_BOX_DIR)/osx107-desktop$(BOX_SUFFIX): osx107-desktop.json $(SOURCES) tp
 list:
 	@for shortcut_target in $(SHORTCUT_TARGETS) ; do \
 		echo $$shortcut_target ; \
+	done
+
+validate:
+	@for template_filename in $(TEMPLATE_FILENAMES) ; do \
+		echo Checking $$template_filename ; \
+		packer validate $$template_filename ; \
 	done
 
 test-$(VMWARE_BOX_DIR)/%$(BOX_SUFFIX): $(VMWARE_BOX_DIR)/%$(BOX_SUFFIX)
