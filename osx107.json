@@ -3,7 +3,7 @@
     "cm": "nocm",
     "cm_version": "",
     "iso_url": "dmg/iso/OSX_InstallESD_10.7_11A511.dmg",
-    "autologin_vagrant_user": "",
+    "autologin": "",
     "install_xcode_cli_tools": "true",
     "update": "true"
   },
@@ -64,7 +64,7 @@
       "type": "shell",
       "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
       "inline": [
-        "[ -z \"{{user `autologin_vagrant_user`}}\" ] && exit",
+        "[ -z \"{{user `autologin`}}\" ] && exit",
         "echo \"Enabling automatic GUI login for the 'vagrant' user..\"",
         "cp /private/tmp/kcpassword /private/etc/kcpassword",
         "/usr/bin/defaults write /Library/Preferences/com.apple.loginwindow autoLoginUser vagrant"
