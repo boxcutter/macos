@@ -5,7 +5,7 @@
     "iso_url": "dmg/OSX_InstallESD_10.8_12A269.dmg",
     "autologin_vagrant_user": "",
     "install_xcode_cli_tools": "true",
-    "install_updates": "true"
+    "update": "true"
   },
   "builders": [
     {
@@ -47,7 +47,7 @@
       "environment_vars": [
         "CM={{user `cm`}}",
         "CM_VERSION={{user `cm_version`}}",
-        "INSTALL_UPDATES={{user `install_updates`}}",
+        "UPDATE={{user `update`}}",
         "INSTALL_XCODE_CLI_TOOLS={{user `install_xcode_cli_tools`}}"
       ],
       "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E -S bash '{{ .Path }}'",

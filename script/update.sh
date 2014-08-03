@@ -1,6 +1,6 @@
 #!/bin/bash -eux
 
-[[ ! $INSTALL_UPDATES ]] && exit
+[[ ! $UPDATE ]] && exit
 
 echo "==> Running software update"
 softwareupdate --install --all -v

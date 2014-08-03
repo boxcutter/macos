@@ -24,9 +24,9 @@ INSTALL_UPDATES ?=
 INSTALL_XCODE_CLI_TOOLS ?=
 # Packer does not allow empty variables, so only pass variables that are defined
 ifdef CM_VERSION
-	PACKER_VARS := -var 'cm=$(CM)' -var 'cm_version=$(CM_VERSION)' -var 'install_updates=$(INSTALL_UPDATES)' -var 'install_xcode_cli_tools=$(INSTALL_XCODE_CLI_TOOLS)'
+	PACKER_VARS := -var 'cm=$(CM)' -var 'cm_version=$(CM_VERSION)' -var 'update=$(UPDATE)' -var 'install_xcode_cli_tools=$(INSTALL_XCODE_CLI_TOOLS)'
 else
-	PACKER_VARS := -var 'cm=$(CM)' -var 'install_updates=$(INSTALL_UPDATES)' -var 'install_xcode_cli_tools=$(INSTALL_XCODE_CLI_TOOLS)'
+	PACKER_VARS := -var 'cm=$(CM)' -var 'update=$(UPDATE)' -var 'install_xcode_cli_tools=$(INSTALL_XCODE_CLI_TOOLS)'
 endif
 ifeq ($(CM),nocm)
 	BOX_SUFFIX := -$(CM).box
