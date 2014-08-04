@@ -124,6 +124,26 @@ validate:
 		packer validate $$template_filename ; \
 	done
 
+clean: clean-builders clean-output clean-packer-cache
+
+clean-builders:
+	@for builder in $(BUILDER_TYPES) ; do \
+		if test -d box/$$builder ; then \
+			echo Deleting box/$$builder/*.box ; \
+			find box/$$builder -maxdepth 1 -type f -name "*.box" ! -name .gitignore -exec rm '{}' \; ; \
+		fi ; \
+	done
+
+clean-output:
+	@for builder in $(BUILDER_TYPES) ; do \
+		echo Deleting output-$$builder-iso ; \
+		echo rm -rf output-$$builder-iso ; \
+	done
+
+clean-packer-cache:
+	echo Deleting packer_cache
+	rm -rf packer_cache
+
 test-$(VMWARE_BOX_DIR)/%$(BOX_SUFFIX): $(VMWARE_BOX_DIR)/%$(BOX_SUFFIX)
 	bin/test-box.sh $< vmware_desktop vmware_fusion $(CURRENT_DIR)/test/*_spec.rb
 
