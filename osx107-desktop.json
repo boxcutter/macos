@@ -2,16 +2,16 @@
   "variables": {
     "cm": "nocm",
     "cm_version": "",
-    "iso_url": "dmg/OSX_InstallESD_10.8_12A269.dmg",
+    "iso_url": "dmg/iso/OSX_InstallESD_10.7_11A511.dmg",
     "autologin": "",
     "install_xcode_cli_tools": "true",
     "update": "true"
   },
   "builders": [
     {
-      "vm_name": "osx108",
+      "vm_name": "osx107-desktop",
       "type": "vmware-iso",
-      "guest_os_type": "darwin12-64",
+      "guest_os_type": "darwin11-64",
       "iso_url": "{{ user `iso_url` }}",
       "iso_checksum_type": "none",
       "ssh_username": "vagrant",
@@ -22,6 +22,7 @@
       "disk_size": 20480,
       "shutdown_command": "echo 'vagrant'|sudo -S shutdown -h now",
       "skip_compaction": true,
+      "ssh_password": "vagrant",
       "vmx_data": {
         "cpuid.coresPerSocket": "1",
         "memsize": "2048",
@@ -74,6 +75,6 @@
   "post-processors": [{
     "type": "vagrant",
     "keep_input_artifact": false,
-    "output": "box/{{.Provider}}/osx108-{{user `cm`}}{{user `cm_version`}}.box"
+    "output": "box/{{.Provider}}/osx107-desktop-{{user `cm`}}{{user `cm_version`}}.box"
   }]
 }

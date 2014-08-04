@@ -39,11 +39,6 @@
   ],
   "provisioners": [
     {
-      "type": "file",
-      "destination": "/private/tmp/kcpassword",
-      "source": "script/support/kcpassword"
-    },
-    {
       "type": "shell",
       "environment_vars": [
         "CM={{user `cm`}}",
@@ -60,6 +55,11 @@
         "script/vmware.sh",
         "script/add-network-interface-detection.sh"
       ]
+    },
+    {
+      "type": "file",
+      "destination": "/private/tmp/kcpassword",
+      "source": "script/support/kcpassword"
     },
     {
       "type": "shell",

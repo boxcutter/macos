@@ -39,11 +39,6 @@
   ],
   "provisioners": [
     {
-      "type": "file",
-      "destination": "/private/tmp/kcpassword",
-      "source": "script/support/kcpassword"
-    },
-    {
       "type": "shell",
       "environment_vars": [
         "CM={{user `cm`}}",
@@ -57,8 +52,14 @@
         "script/update.sh",
         "script/xcode-cli-tools.sh",
         "script/cmtool.sh",
-        "script/vmware.sh"
+        "script/vmware.sh",
+        "script/add-network-interface-detection.sh"
       ]
+    },
+    {
+      "type": "file",
+      "destination": "/private/tmp/kcpassword",
+      "source": "script/support/kcpassword"
     },
     {
       "type": "shell",

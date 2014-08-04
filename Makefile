@@ -20,8 +20,8 @@ ifndef CM_VERSION
 		CM_VERSION = latest
 	endif
 endif
-INSTALL_UPDATES ?=
-INSTALL_XCODE_CLI_TOOLS ?=
+UPDATE ?= true
+INSTALL_XCODE_CLI_TOOLS ?= true
 # Packer does not allow empty variables, so only pass variables that are defined
 ifdef CM_VERSION
 	PACKER_VARS := -var 'cm=$(CM)' -var 'cm_version=$(CM_VERSION)' -var 'update=$(UPDATE)' -var 'install_xcode_cli_tools=$(INSTALL_XCODE_CLI_TOOLS)'
@@ -66,7 +66,7 @@ test-$(1): test-vmware/$(1)
 
 endef
 
-SHORTCUT_TARGETS := osx109 osx108 osx107
+SHORTCUT_TARGETS := osx109 osx109-desktop osx108 osx108-desktop osx107 osx107-desktop
 $(foreach i,$(SHORTCUT_TARGETS),$(eval $(call SHORTCUT,$(i))))
 
 ###############################################################################
