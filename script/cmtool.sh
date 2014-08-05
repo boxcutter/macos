@@ -38,7 +38,8 @@ install_chefdk()
         curl -L https://www.opscode.com/chef/install.sh | sh -s -- -P chefdk -v $CM_VERSION
     fi
     echo "==> Adding Chef Development Kit and Ruby to PATH"
-    echo 'eval "$(chef shell-init bash)"' >> ~/.bash_profile
+    echo 'eval "$(chef shell-init bash)"' >> /Users/vagrant/.bash_profile
+    chown vagrant /Users/vagrant/.bash_profile
 }
 
 install_salt() {
