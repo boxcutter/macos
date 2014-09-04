@@ -5,7 +5,7 @@ MAC_OSX_10_9_MAVERICKS_INSTALLER := $(caroline_osx)/OS\ X\ Mavericks/Install\ OS
 
 VMWARE_BOX_FILES := $(wildcard box/vmware/*.box)
 VIRTUALBOX_BOX_FILES := $(wildcard box/virtualbox/*.box)
-VMWARE_S3_BUCKET := s3://box-cutter-us-east-1-cloudtrail/osx/vmware9.6.2/
+VMWARE_S3_BUCKET := s3://box-cutter-us-east-1-cloudtrail/osx/vmware9.8.3/
 VIRTUALBOX_S3_BUCKET := s3://box-cutter-us-east-1-cloudtrail/osx/virtualbox4.3.14/
 S3_GRANT_ID := id=6efa364c53605afa1f4186b2b23ba97a354e74c7b9238317d9f57bc8f6f6bc5a
 ALLUSERS_ID := uri=http://acs.amazonaws.com/groups/global/AllUsers
