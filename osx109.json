@@ -1,5 +1,6 @@
 {
   "variables": {
+    "version": "0.1.0",
     "cm": "nocm",
     "cm_version": "",
     "iso_url": "dmg/OSX_InstallESD_10.9_13A603.dmg",
@@ -75,6 +76,6 @@
   "post-processors": [{
     "type": "vagrant",
     "keep_input_artifact": false,
-    "output": "box/{{.Provider}}/osx109-{{user `cm`}}{{user `cm_version`}}.box"
+    "output": "box/{{.Provider}}/osx109-{{user `cm`}}{{user `cm_version`}}-{{user `version`}}.box"
   }]
 }

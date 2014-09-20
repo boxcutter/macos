@@ -1,5 +1,6 @@
 {
   "variables": {
+    "version": "0.1.0",
     "cm": "nocm",
     "cm_version": "",
     "iso_url": "dmg/OSX_InstallESD_10.9_13A603.dmg",
@@ -76,6 +77,6 @@
     "type": "vagrant",
     "keep_input_artifact": false,
     "vagrantfile_template": "tpl/vagrantfile-osx109-desktop.tpl",
-    "output": "box/{{.Provider}}/osx109-desktop-{{user `cm`}}{{user `cm_version`}}.box"
+    "output": "box/{{.Provider}}/osx109-desktop-{{user `cm`}}{{user `cm_version`}}-{{user `version`}}.box"
   }]
 }
