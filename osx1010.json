@@ -1,0 +1,81 @@
+{
+  "variables": {
+    "version": "0.1.0",
+    "cm": "nocm",
+    "cm_version": "",
+    "iso_url": "dmg/OSX_InstallESD_10.9_13A603.dmg",
+    "autologin": "",
+    "install_xcode_cli_tools": "true",
+    "update": "true"
+  },
+  "builders": [
+    {
+      "vm_name": "osx1010",
+      "type": "vmware-iso",
+      "guest_os_type": "darwin12-64",
+      "iso_url": "{{ user `iso_url` }}",
+      "iso_checksum_type": "none",
+      "ssh_username": "vagrant",
+      "ssh_password": "vagrant",
+      "ssh_wait_timeout": "10000s",
+      "ssh_port": 22,
+      "tools_upload_flavor": "darwin",
+      "boot_wait": "2s",
+      "disk_size": 20480,
+      "shutdown_command": "echo 'vagrant'|sudo -S shutdown -h now",
+      "skip_compaction": true,
+      "vmx_data": {
+        "cpuid.coresPerSocket": "1",
+        "memsize": "2048",
+        "numvcpus": "1",
+        "firmware": "efi",
+        "keyboardAndMouseProfile": "macProfile",
+        "smc.present": "TRUE",
+        "hpet0.present": "TRUE",
+        "ich7m.present": "TRUE",
+        "ehci.present": "TRUE",
+        "usb.present": "TRUE"
+      }
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "environment_vars": [
+        "CM={{user `cm`}}",
+        "CM_VERSION={{user `cm_version`}}",
+        "UPDATE={{user `update`}}",
+        "INSTALL_XCODE_CLI_TOOLS={{user `install_xcode_cli_tools`}}"
+      ],
+      "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E -S bash '{{ .Path }}'",
+      "scripts": [
+        "script/vagrant.sh",
+        "script/update.sh",
+        "script/xcode-cli-tools.sh",
+        "script/cmtool.sh",
+        "script/vmware.sh",
+        "script/add-network-interface-detection.sh"
+      ]
+    },
+    {
+      "type": "file",
+      "destination": "/private/tmp/kcpassword",
+      "source": "script/support/kcpassword"
+    },
+    {
+      "type": "shell",
+      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
+      "inline": [
+        "[ -z \"{{user `autologin`}}\" ] && exit",
+        "echo \"Enabling automatic GUI login for the 'vagrant' user..\"",
+        "cp /private/tmp/kcpassword /private/etc/kcpassword",
+        "/usr/bin/defaults write /Library/Preferences/com.apple.loginwindow autoLoginUser vagrant"
+      ]
+    }
+  ],
+  "post-processors": [{
+    "type": "vagrant",
+    "keep_input_artifact": false,
+    "output": "box/{{.Provider}}/osx1010-{{user `cm`}}{{user `cm_version`}}-{{user `version`}}.box"
+  }]
+}
