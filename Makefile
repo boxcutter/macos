@@ -3,11 +3,6 @@ ifneq ("$(wildcard Makefile.local)", "")
 	include Makefile.local
 endif
 
-PACKER_VERSION = $(shell packer --version | sed 's/^.* //g' | sed 's/^.//')
-ifneq (0.5.0, $(word 1, $(sort 0.5.0 $(PACKER_VERSION))))
-$(error Packer version less than 0.5.x, please upgrade)
-endif
-
 MAC_OSX_10_7_LION_INSTALLER ?= iso/OS\ X\ Lion/InstallESD.dmg
 MAC_OSX_10_8_MOUNTAIN_LION_INSTALLER ?= iso/OS\ X\ Mountain\ Lion/InstallESD.dmg
 MAC_OSX_10_9_MAVERICKS_INSTALLER ?= iso/OS\ X\ Mavericks/Install\ OS\ X\ Mavericks.app
@@ -44,14 +39,17 @@ ifdef PACKER_DEBUG
 else
 	PACKER := packer
 endif
-BUILDER_TYPES := vmware
+BUILDER_TYPES := vmware virtualbox
 TEMPLATE_FILENAMES := $(wildcard *.json)
 BOX_FILENAMES := $(TEMPLATE_FILENAMES:.json=$(BOX_SUFFIX))
 BOX_FILES := $(foreach builder, $(BUILDER_TYPES), $(foreach box_filename, $(BOX_FILENAMES), box/$(builder)/$(box_filename)))
 TEST_BOX_FILES := $(foreach builder, $(BUILDER_TYPES), $(foreach box_filename, $(BOX_FILENAMES), test-box/$(builder)/$(box_filename)))
 VMWARE_BOX_DIR := box/vmware
+VIRTUALBOX_BOX_DIR := box/virtualbox
 VMWARE_OUTPUT := output-vmware-iso
+VIRTUALBOX_OUTPUT := output-virtualbox-iso
 VMWARE_BUILDER := vmware-iso
+VIRTUALBOX_BUILDER := virtualbox-iso
 CURRENT_DIR := $(shell pwd)
 SOURCES := $(wildcard script/*.sh)
 
@@ -65,15 +63,19 @@ test: $(TEST_BOX_FILES)
 # Target shortcuts
 define SHORTCUT
 
+$(1): vmware/$(1) virtualbox/$(1)
+
+test-$(1): test-vmware/$(1) test-virtualbox/$(1)
+
 vmware/$(1): $(VMWARE_BOX_DIR)/$(1)$(BOX_SUFFIX)
 
 test-vmware/$(1): test-$(VMWARE_BOX_DIR)/$(1)$(BOX_SUFFIX)
 
 ssh-vmware/$(1): ssh-$(VMWARE_BOX_DIR)/$(1)$(BOX_SUFFIX)
 
-$(1): vmware/$(1)
+virtualbox/$(1): $(VIRTUALBOX_BOX_DIR)/$(1)$(BOX_SUFFIX)
 
-test-$(1): test-vmware/$(1)
+test-virtualbox/$(1): test-$(VIRTUALBOX_BOX_DIR)/$(1)$(BOX_SUFFIX)
 
 endef
 
@@ -124,7 +126,41 @@ $(VMWARE_BOX_DIR)/osx107-desktop$(BOX_SUFFIX): osx107-desktop.json $(SOURCES) tp
 	mkdir -p $(VMWARE_BOX_DIR)
 	$(PACKER) build -only=$(VMWARE_BUILDER) $(PACKER_VARS) -var "iso_url=dmg/$(MAC_OSX_10_7_LION_BOOT_DMG)" $<
 
+$(VIRTUALBOX_BOX_DIR)/osx109$(BOX_SUFFIX): osx109.json $(SOURCES) dmg/$(MAC_OSX_10_9_MAVERICKS_BOOT_DMG)
+	rm -rf $(VIRTUALBOX_OUTPUT)
+	mkdir -p $(VIRTUALBOX_BOX_DIR)
+	$(PACKER) build -only=$(VIRTUALBOX_BUILDER) $(PACKER_VARS) -var "iso_url=dmg/$(MAC_OSX_10_9_MAVERICKS_BOOT_DMG)" $<
+
+$(VIRTUALBOX_BOX_DIR)/osx109-desktop$(BOX_SUFFIX): osx109-desktop.json $(SOURCES) tpl/vagrantfile-osx109-desktop.tpl
+	rm -rf $(VMWARE_OUTPUT)
+	mkdir -p $(VMWARE_BOX_DIR)
+	$(PACKER) build -only=$(VMWARE_BUILDER) $(PACKER_VARS) -var "iso_url=dmg/$(MAC_OSX_10_9_MAVERICKS_BOOT_DMG)" $<
+
+$(VIRTUALBOX_BOX_DIR)/osx108$(BOX_SUFFIX): osx108.json $(SOURCES)
+	rm -rf $(VIRTUALBOX_OUTPUT)
+	mkdir -p $(VIRTUALBOX_BOX_DIR)
+	$(PACKER) build -only=$(VIRTUALBOX_UILDER) $(PACKER_VARS) -var "iso_url=dmg/$(MAC_OSX_10_8_MOUNTAIN_LION_BOOT_DMG)" $<
+
+$(VIRTUALBOX_BOX_DIR)/osx108-desktop$(BOX_SUFFIX): osx108-desktop.json $(SOURCES) tpl/vagrantfile-osx108-desktop.tpl
+	rm -rf $(VIRTUALBOX_OUTPUT)
+	mkdir -p $(VIRTUALBOX_BOX_DIR)
+	$(PACKER) build -only=$(VIRTUALBOX_BUILDER) $(PACKER_VARS) -var "iso_url=dmg/$(MAC_OSX_10_8_MOUNTAIN_LION_BOOT_DMG)" $<
+
+$(VIRTUALBOX_BOX_DIR)/osx107$(BOX_SUFFIX): osx107.json $(SOURCES)
+	rm -rf $(VIRTUALBOX_OUTPUT)
+	mkdir -p $(VIRTUALBOX_BOX_DIR)
+	$(PACKER) build -only=$(VIRTUALBOX_BUILDER) $(PACKER_VARS) -var "iso_url=dmg/$(MAC_OSX_10_7_LION_BOOT_DMG)" $<
+
+$(VIRTUALBOX_BOX_DIR)/osx107-desktop$(BOX_SUFFIX): osx107-desktop.json $(SOURCES) tpl/vagrantfile-osx107-desktop.tpl
+	rm -rf $(VIRTUALBOX_OUTPUT)
+	mkdir -p $(VIRTUALBOX_BOX_DIR)
+	$(PACKER) build -only=$(VIRTUALBOX_BUILDER) $(PACKER_VARS) -var "iso_url=dmg/$(MAC_OSX_10_7_LION_BOOT_DMG)" $<
+
 list:
+	@echo "Prepend 'vmware/' or 'virtualbox/' to build a particular target:"
+	@echo "  make vmware/osx109"
+	@echo ""
+	@echo "Targets;"
 	@for shortcut_target in $(SHORTCUT_TARGETS) ; do \
 		echo $$shortcut_target ; \
 	done
@@ -160,3 +196,9 @@ test-$(VMWARE_BOX_DIR)/%$(BOX_SUFFIX): $(VMWARE_BOX_DIR)/%$(BOX_SUFFIX)
 
 ssh-$(VMWARE_BOX_DIR)/%$(BOX_SUFFIX): $(VMWARE_BOX_DIR)/%$(BOX_SUFFIX)
 	bin/ssh-box.sh $< vmware_desktop vmware_fusion $(CURRENT_DIR)/test/*_spec.rb
+
+test-$(VIRTUALBOX_BOX_DIR)/%$(BOX_SUFFIX): $(VIRTUALBOX_BOX_DIR)/%$(BOX_SUFFIX)
+	bin/test-box.sh $< virtualbox virtualbox $(CURRENT_DIR)/test/*_spec.rb
+
+ssh-$(VIRTUALBOX_BOX_DIR)/%$(BOX_SUFFIX): $(VIRTUALBOX_BOX_DIR)/%$(BOX_SUFFIX)
+	bin/ssh-box.sh $< virtualbox virtualbox $(CURRENT_DIR)/test/*_spec.rb
