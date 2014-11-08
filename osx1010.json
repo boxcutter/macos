@@ -3,7 +3,7 @@
     "version": "0.1.0",
     "cm": "nocm",
     "cm_version": "",
-    "iso_url": "dmg/OSX_InstallESD_10.9_13A603.dmg",
+    "iso_url": "dmg/OSX_InstallESD_10.10_14A389.dmg",
     "autologin": "",
     "install_xcode_cli_tools": "true",
     "update": "true"
