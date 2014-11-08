@@ -108,7 +108,7 @@ $(VMWARE_BOX_DIR)/osx1010$(BOX_SUFFIX): osx1010.json $(SOURCES) dmg/$(MAC_OSX_10
 	mkdir -p $(VMWARE_BOX_DIR)
 	$(PACKER) build -only=$(VMWARE_BUILDER) $(PACKER_VARS) -var "iso_url=dmg/$(MAC_OSX_10_10_YOSEMITE_BOOT_DMG)" $<
 
-$(VMWARE_BOX_DIR)/osx1010-desktop$(BOX_SUFFIX): osx1010-desktop.json $(SOURCES) tpl/vagrantfile-osx1010-desktop.tpl
+$(VMWARE_BOX_DIR)/osx1010-desktop$(BOX_SUFFIX): osx1010-desktop.json $(SOURCES) tpl/vagrantfile-osx1010-desktop.tpl dmg/$(MAC_OSX_10_10_YOSEMITE_BOOT_DMG)
 	rm -rf $(VMWARE_OUTPUT)
 	mkdir -p $(VMWARE_BOX_DIR)
 	$(PACKER) build -only=$(VMWARE_BUILDER) $(PACKER_VARS) -var "iso_url=dmg/$(MAC_OSX_10_10_YOSEMITE_BOOT_DMG)" $<
