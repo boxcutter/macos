@@ -12,10 +12,10 @@ Vagrant boxes using Packer.
 * osx109 - Mavericks headless, VMware 8.7GB
 * osx108 - Mountain Lion headless, VMware 7.4GB
 * osx107 - Lion headless, VMware 8.6GB
-* osx1010 - Yosemite desktop, VMware 7.4GB
-* osx109 - Mavericks desktop, VMware 8.1GB
-* osx108 - Mountain Lion desktop, VMware 7.4GB
-* osx107 - Lion desktop, VMware 8.5GB
+* osx1010-desktop - Yosemite desktop, VMware 7.4GB
+* osx109-desktop - Mavericks desktop, VMware 8.1GB
+* osx108-desktop - Mountain Lion desktop, VMware 7.4GB
+* osx107-desktop - Lion desktop, VMware 8.5GB
 
 ## Building the Vagrant boxes
 
