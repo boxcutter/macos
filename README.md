@@ -8,17 +8,22 @@ Vagrant boxes using Packer.
 
 ## Current Boxes
 
-* osx109
-* osx108
-* osx107
+* osx1010 - Yosemite headless, VMware 7.4GB
+* osx109 - Mavericks headless, VMware 8.7GB
+* osx108 - Mountain Lion headless, VMware 7.4GB
+* osx107 - Lion headless, VMware 8.6GB
+* osx1010-desktop - Yosemite desktop, VMware 7.4GB
+* osx109-desktop - Mavericks desktop, VMware 8.1GB
+* osx108-desktop - Mountain Lion desktop, VMware 7.4GB
+* osx107-desktop - Lion desktop, VMware 8.5GB
 
 ## Building the Vagrant boxes
 
-To build all the boxes, you will need both VirtualBox and VMware Fusion installed.
+To build all the boxes, you will need both VMware Fusion and VirtualBox  installed.
 
 A GNU Make `Makefile` drives the process via the following targets:
 
-    make        # Build all the box types (VirtualBox & VMware)
+    make        # Build all the box types (VMware & VirtualBox)
     make test   # Run tests against all the boxes
     make list   # Print out individual targets
     make clean  # Clean up build detritus
@@ -75,6 +80,7 @@ For Mac OS X, the installer path variables are:
 * `MAC_OSX_10_7_LION_INSTALLER`
 * `MAC_OSX_10_8_MOUNTAIN_LION_INSTALLER`
 * `MAC_OSX_10_9_MAVERICKS_INSTALLER`
+* `MAC_OSX_10_10_YOSEMITE_INSTALLER`
 
 You can also override these setting, such as with
 `MAC_OSX_10_9_MAVERICKS_INSTALLER := file:///Volumes/macosx/OS\ X\ Mavericks/Install\ OS\ X\ Mavericks.app`
