@@ -1,39 +1,63 @@
 #!/bin/sh
-
+USER="__USER__PLACEHOLDER__"
 OSX_VERS=$(sw_vers -productVersion | awk -F "." '{print $2}')
+PlistBuddy="/usr/libexec/PlistBuddy"
 
 # Override the default behavior of sshd on the target volume to be not disabled
 if [ "$OSX_VERS" -ge 10 ]; then
     OVERRIDES_PLIST="$3/private/var/db/com.apple.xpc.launchd/disabled.plist"
-    /usr/libexec/PlistBuddy -c 'Delete :com.openssh.sshd' "$OVERRIDES_PLIST"
-    /usr/libexec/PlistBuddy -c 'Add :com.openssh.sshd bool False' "$OVERRIDES_PLIST"
+    $PlistBuddy -c 'Delete :com.openssh.sshd' "$OVERRIDES_PLIST"
+    $PlistBuddy -c 'Add :com.openssh.sshd bool False' "$OVERRIDES_PLIST"
 else
     OVERRIDES_PLIST="$3/private/var/db/launchd.db/com.apple.launchd/overrides.plist"
-    /usr/libexec/PlistBuddy -c 'Delete :com.openssh.sshd' "$OVERRIDES_PLIST"
-    /usr/libexec/PlistBuddy -c 'Add :com.openssh.sshd:Disabled bool False' "$OVERRIDES_PLIST"
+    $PlistBuddy -c 'Delete :com.openssh.sshd' "$OVERRIDES_PLIST"
+    $PlistBuddy -c 'Add :com.openssh.sshd:Disabled bool False' "$OVERRIDES_PLIST"
 fi
 
-# Add vagrant to sudoers
+# Add user to sudoers
 cp "$3/etc/sudoers" "$3/etc/sudoers.orig"
-echo 'vagrant ALL=(ALL) NOPASSWD: ALL' >> "$3/etc/sudoers"
+echo "$USER ALL=(ALL) NOPASSWD: ALL" >> "$3/etc/sudoers"
 
-# Add vagrant to admin group memberships (even though GID 80 is enough for most things)
-VAGRANT_GUID=$(/usr/libexec/PlistBuddy -c 'Print :generateduid:0' "$3/private/var/db/dslocal/nodes/Default/users/vagrant.plist")
-VAGRANT_UID=$(/usr/libexec/PlistBuddy -c 'Print :uid:0' "$3/private/var/db/dslocal/nodes/Default/users/vagrant.plist")
-/usr/libexec/PlistBuddy -c 'Add :groupmembers: string $VAGRANT_GUID' "$3/private/var/db/dslocal/nodes/Default/groups/admin.plist"
+# Add user to admin group memberships (even though GID 80 is enough for most things)
+USER_GUID=$($PlistBuddy -c 'Print :generateduid:0' "$3/private/var/db/dslocal/nodes/Default/users/$USER.plist")
+USER_UID=$($PlistBuddy -c 'Print :uid:0' "$3/private/var/db/dslocal/nodes/Default/users/$USER.plist")
+$PlistBuddy -c 'Add :groupmembers: string '"$USER_GUID" "$3/private/var/db/dslocal/nodes/Default/groups/admin.plist"
 
-# Pre-create vagrant user folder so veewee will have somewhere to scp configinfo to
-mkdir -p "$3/Users/vagrant/Library/Preferences"
+# Pre-create user folder so veewee will have somewhere to scp configinfo to
+mkdir -p "$3/Users/$USER/Library/Preferences"
 
 # Suppress annoying iCloud welcome on a GUI login
-/usr/libexec/PlistBuddy -c 'Add :DidSeeCloudSetup bool true' "$3/Users/vagrant/Library/Preferences/com.apple.SetupAssistant.plist"
-/usr/libexec/PlistBuddy -c 'Add :LastSeenCloudProductVersion string 10.9' "$3/Users/vagrant/Library/Preferences/com.apple.SetupAssistant.plist"
-
-# Disable loginwindow screensaver to save CPU cycles
-/usr/libexec/PlistBuddy -c 'Add :loginWindowIdleTime integer 0' "$3/Library/Preferences/com.apple.screensaver.plist"
+$PlistBuddy -c 'Add :DidSeeCloudSetup bool true' "$3/Users/$USER/Library/Preferences/com.apple.SetupAssistant.plist"
+$PlistBuddy -c 'Add :LastSeenCloudProductVersion string 10.'"$OSX_VERS" "$3/Users/$USER/Library/Preferences/com.apple.SetupAssistant.plist"
 
 # Fix ownership now that the above has made a Library folder as root
-chown -R $VAGRANT_UID:20 "$3/Users/vagrant"
+chown -R "$USER_UID":20 "$3/Users/$USER"
+
+# Disable Diagnostics submissions prompt if 10.10
+# http://macops.ca/diagnostics-prompt-yosemite
+if [ "$OSX_VERS" -ge 10 ]; then
+    # Apple's defaults
+    SUBMIT_TO_APPLE=YES
+    SUBMIT_TO_APP_DEVELOPERS=NO
+
+    CRASHREPORTER_SUPPORT="$3/Library/Application Support/CrashReporter"
+    CRASHREPORTER_DIAG_PLIST="${CRASHREPORTER_SUPPORT}/DiagnosticMessagesHistory.plist"
+    if [ ! -d "${CRASHREPORTER_SUPPORT}" ]; then
+        mkdir "${CRASHREPORTER_SUPPORT}"
+        chmod 775 "${CRASHREPORTER_SUPPORT}"
+        chown root:admin "${CRASHREPORTER_SUPPORT}"
+    fi
+    for key in AutoSubmit AutoSubmitVersion ThirdPartyDataSubmit ThirdPartyDataSubmitVersion; do
+        $PlistBuddy -c "Delete :$key" "${CRASHREPORTER_DIAG_PLIST}" 2> /dev/null
+    done
+    $PlistBuddy -c "Add :AutoSubmit bool ${SUBMIT_TO_APPLE}" "${CRASHREPORTER_DIAG_PLIST}"
+    $PlistBuddy -c "Add :AutoSubmitVersion integer 4" "${CRASHREPORTER_DIAG_PLIST}"
+    $PlistBuddy -c "Add :ThirdPartyDataSubmit bool ${SUBMIT_TO_APP_DEVELOPERS}" "${CRASHREPORTER_DIAG_PLIST}"
+    $PlistBuddy -c "Add :ThirdPartyDataSubmitVersion integer 4" "${CRASHREPORTER_DIAG_PLIST}"
+fi
+
+# Disable loginwindow screensaver to save CPU cycles
+$PlistBuddy -c 'Add :loginWindowIdleTime integer 0' "$3/Library/Preferences/com.apple.screensaver.plist"
 
 # Disable the welcome screen
 touch "$3/private/var/db/.AppleSetupDone"
