@@ -1,14 +1,14 @@
-#!/bin/bash -eux
+#!/bin/sh
 
-TOOLS_PATH="/Users/vagrant/darwin.iso"
+TOOLS_PATH="/Users/$USERNAME/darwin.iso"
 # VMware Fusion specific items
-if [[ $PACKER_BUILDER_TYPE =~ vmware ]]; then
+if [ -e .vmfusion_version ] || [[ "$PACKER_BUILDER_TYPE" == vmware* ]]; then
     if [ ! -e "$TOOLS_PATH" ]; then
         echo "Couldn't locate uploaded tools iso at $TOOLS_PATH!"
         exit 1
     fi
 
-    TMPMOUNT=$(/usr/bin/mktemp -d /tmp/vmware-tools.XXXX)
+    TMPMOUNT=`/usr/bin/mktemp -d /tmp/vmware-tools.XXXX`
     hdiutil attach "$TOOLS_PATH" -mountpoint "$TMPMOUNT"
 
     INSTALLER_PKG="$TMPMOUNT/Install VMware Tools.app/Contents/Resources/VMware Tools.pkg"
