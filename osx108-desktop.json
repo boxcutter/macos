@@ -6,7 +6,10 @@
     "iso_url": "dmg/OSX_InstallESD_10.8_12A269.dmg",
     "autologin": "true",
     "install_xcode_cli_tools": "true",
-    "update": "true"
+    "update": "true",
+    "ssh_username": "vagrant",
+    "ssh_password": "vagrant",
+    "install_vagrant_keys": true
   },
   "builders": [{
     "vm_name": "osx108-desktop",
@@ -14,13 +17,13 @@
     "guest_os_type": "darwin12-64",
     "iso_url": "{{ user `iso_url` }}",
     "iso_checksum_type": "none",
-    "ssh_username": "vagrant",
-    "ssh_password": "vagrant",
+    "ssh_username": "{{ user `ssh_username` }}",
+    "ssh_password": "{{ user `ssh_password` }}",
     "ssh_wait_timeout": "10000s",
     "tools_upload_flavor": "darwin",
     "boot_wait": "2s",
     "disk_size": 40960,
-    "shutdown_command": "echo 'vagrant'|sudo -S shutdown -h now",
+    "shutdown_command": "echo '{{ user `ssh_username` }}'|sudo -S shutdown -h now",
     "skip_compaction": true,
     "vmx_data": {
       "cpuid.coresPerSocket": "1",
@@ -41,8 +44,8 @@
     "guest_os_type": "MacOS108_64",
     "iso_url": "{{ user `iso_url` }}",
     "iso_checksum_type": "none",
-    "ssh_username": "vagrant",
-    "ssh_password": "vagrant",
+    "ssh_username": "{{ user `ssh_username` }}",
+    "ssh_password": "{{ user `ssh_password` }}",
     "ssh_wait_timeout": "10000s",
     "ssh_port": 22,
     "guest_additions_mode": "disable",
@@ -50,7 +53,7 @@
     "iso_interface": "sata",
     "hard_drive_interface": "sata",
     "disk_size": 20480,
-    "shutdown_command": "echo 'vagrant'|sudo -S shutdown -h now",
+    "shutdown_command": "echo '{{ user `ssh_username` }}'|sudo -S shutdown -h now",
     "vboxmanage": [
       ["modifyvm", "{{.Name}}", "--audiocontroller", "hda"],
       ["modifyvm", "{{.Name}}", "--boot1", "dvd"],
@@ -64,6 +67,34 @@
       ["modifyvm", "{{.Name}}", "--mouse", "usbtablet"],
       ["modifyvm", "{{.Name}}", "--vram", "9"]
     ]
+  },
+  {
+    "vm_name": "osx108-desktop",
+    "type": "parallels-iso",
+    "guest_os_type": "win-8",
+    "iso_url": "{{ user `iso_url` }}",
+    "iso_checksum_type": "none",
+    "ssh_username": "{{ user `ssh_username` }}",
+    "ssh_password": "{{ user `ssh_password` }}",
+    "ssh_wait_timeout": "10000s",
+    "ssh_port": 22,
+    "parallels_tools_flavor": "mac",
+    "boot_wait": "5s",
+    "disk_size": 20480,
+    "shutdown_command": "echo '{{ user `ssh_username` }}'|sudo -S shutdown -h now",
+    "prlctl": [
+      ["set", "{{.Name}}", "--memsize", "2048"],
+      ["set", "{{.Name}}", "--memquota", "512:2048"],
+      ["set", "{{.Name}}", "--cpus", "2"],
+      ["set", "{{.Name}}", "--distribution", "macosx"],
+      ["set", "{{.Name}}", "--3d-accelerate", "highest"],
+      ["set", "{{.Name}}", "--high-resolution", "off"],
+      ["set", "{{.Name}}", "--auto-share-camera", "off"],
+      ["set", "{{.Name}}", "--auto-share-bluetooth", "off"],
+      ["set", "{{.Name}}", "--on-window-close", "keep-running"],
+      ["set", "{{.Name}}", "--isolate-vm", "on"],
+      ["set", "{{.Name}}", "--shf-host", "off"]
+    ]
   }],
   "provisioners": [
     {
@@ -72,7 +103,9 @@
         "CM={{user `cm`}}",
         "CM_VERSION={{user `cm_version`}}",
         "UPDATE={{user `update`}}",
-        "INSTALL_XCODE_CLI_TOOLS={{user `install_xcode_cli_tools`}}"
+        "INSTALL_XCODE_CLI_TOOLS={{user `install_xcode_cli_tools`}}",
+        "INSTALL_VAGRANT_KEYS={{user `install_vagrant_keys`}}",
+        "SSH_USERNAME={{ user `ssh_username` }}"
       ],
       "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E -S bash '{{ .Path }}'",
       "scripts": [
@@ -81,22 +114,23 @@
         "script/xcode-cli-tools.sh",
         "script/cmtool.sh",
         "script/vmware.sh",
+        "script/parallels.sh",
         "script/add-network-interface-detection.sh"
       ]
     },
     {
       "type": "file",
-      "destination": "/private/tmp/kcpassword",
-      "source": "script/support/kcpassword"
+      "source": "script/support/set_kcpassword.py",
+      "destination": "/private/tmp/set_kcpassword.py"
     },
     {
       "type": "shell",
       "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
       "inline": [
-        "[ -z \"{{user `autologin`}}\" ] && exit",
-        "echo \"Enabling automatic GUI login for the 'vagrant' user..\"",
-        "cp /private/tmp/kcpassword /private/etc/kcpassword",
-        "/usr/bin/defaults write /Library/Preferences/com.apple.loginwindow autoLoginUser vagrant"
+        "if [ \"{{user `autologin`}}\" != \"true\" ] && [ \"{{user `autologin`}}\" != \"1\" ]; then exit; fi",
+        "echo \"Enabling automatic GUI login for the '{{ user `ssh_username` }}' user..\"",
+        "python /private/tmp/set_kcpassword.py \"{{ user `ssh_password` }}\"",
+        "/usr/bin/defaults write /Library/Preferences/com.apple.loginwindow autoLoginUser \"{{ user `ssh_username` }}\""
       ]
     }
   ],

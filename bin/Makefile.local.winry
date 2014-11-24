@@ -2,6 +2,7 @@ winry_osx := /Volumes/Storage/software/osx
 MAC_OSX_10_7_LION_INSTALLER := $(winry_osx)/OS\ X\ Lion/InstallESD.dmg
 MAC_OSX_10_8_MOUNTAIN_LION_INSTALLER := $(winry_osx)/OS\ X\ Mountain\ Lion/InstallESD.dmg
 MAC_OSX_10_9_MAVERICKS_INSTALLER := $(winry_osx)/OS\ X\ Mavericks/Install\ OS\ X\ Mavericks.app
+MAC_OSX_10_10_YOSEMITE_INSTALLER := $(winry_osx)/OS\ X\ Yosemite/Install\ OS\ X\ Yosemite.app
 
 VIRTUALBOX_VERSION := $(shell virtualbox --help | head -n 1 | awk '{print $$NF}')
 VMWARE_VERSION := 9.8.4
