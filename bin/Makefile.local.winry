@@ -5,7 +5,7 @@ MAC_OSX_10_9_MAVERICKS_INSTALLER := $(winry_osx)/OS\ X\ Mavericks/Install\ OS\ X
 MAC_OSX_10_10_YOSEMITE_INSTALLER := $(winry_osx)/OS\ X\ Yosemite/Install\ OS\ X\ Yosemite.app
 
 VIRTUALBOX_VERSION := $(shell virtualbox --help | head -n 1 | awk '{print $$NF}')
-VMWARE_VERSION := 9.8.4
+VMWARE_VERSION := 9.9.0
 PARALLELS_VERSION := $(shell prlctl --version | awk '{print $$3}')
 VMWARE_BOX_FILES := $(wildcard box/vmware/*.box)
 VIRTUALBOX_BOX_FILES := $(wildcard box/virtualbox/*.box)
