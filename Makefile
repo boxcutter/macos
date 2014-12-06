@@ -47,13 +47,21 @@ else
 	PACKER := packer
 endif
 BUILDER_TYPES := vmware virtualbox parallels
-TEMPLATE_FILENAMES := $(wildcard *.json)
-BOX_FILENAMES := $(TEMPLATE_FILENAMES:.json=$(BOX_SUFFIX))
-BOX_FILES := $(foreach builder, $(BUILDER_TYPES), $(foreach box_filename, $(BOX_FILENAMES), box/$(builder)/$(box_filename)))
-TEST_BOX_FILES := $(foreach builder, $(BUILDER_TYPES), $(foreach box_filename, $(BOX_FILENAMES), test-box/$(builder)/$(box_filename)))
 VMWARE_BOX_DIR := box/vmware
 VIRTUALBOX_BOX_DIR := box/virtualbox
 PARALLELS_BOX_DIR := box/parallels
+TEMPLATE_FILENAMES := $(wildcard *.json)
+BOX_FILENAMES := $(TEMPLATE_FILENAMES:.json=$(BOX_SUFFIX))
+VMWARE_BOX_FILENAMES := $(TEMPLATE_FILENAMES:.json=$(BOX_SUFFIX))
+VMWARE_BOX_FILES := $(foreach box_filename, $(VMWARE_BOX_FILENAMES), $(VMWARE_BOX_DIR)/$(box-filename))
+VIRTUALBOX_TEMPLATE_FILENAMES = osx1010-desktop.json osx1010.json osx109-desktop.json osx109.json osx108-desktop.json osx108.json
+VIRTUALBOX_BOX_FILENAMES := $(VIRTUALBOX_TEMPLATE_FILENAMES:.json=$(BOX_SUFFIX))
+VIRTUALBOX_BOX_FILES := $(foreach box_filename, $(VIRTUALBOX_BOX_FILENAMES), $(VIRTUALBOX_BOX_DIR)/$(box_filename))
+PARALLELS_TEMPLATE_FILENAMES = osx1010.json osx109.json osx108.json
+PARALLELS_BOX_FILENAMES := $(PARALLELS_TEMPLATE_FILENAMES:.json=$(BOX_SUFFIX))
+PARALLELS_BOX_FILES := $(foreach box_filename, $(PARALLELS_BOX_FILENAMES), $(PARALLELS_BOX_DIR)/$(box_filename))
+BOX_FILES := $(VMWARE_BOX_FILES) $(VIRTUALBOX_BOX_FILES) $(PARALLELS_BOX_FILES)
+TEST_BOX_FILES := $(foreach builder, $(BUILDER_TYPES), $(foreach box_filename, $(BOX_FILENAMES), test-box/$(builder)/$(box_filename)))
 VMWARE_OUTPUT := output-vmware-iso
 VIRTUALBOX_OUTPUT := output-virtualbox-iso
 PARALLELS_OUTPUT := output-parallels-iso
@@ -92,6 +100,22 @@ parallels/$(1): $(PARALLELS_BOX_DIR)/$(1)$(BOX_SUFFIX)
 test-parallels/$(1): test-$(PARALLELS_BOX_DIR)/$(1)$(BOX_SUFFIX)
 
 ssh-parallels/$(1): ssh-$(PARALLELS_BOX_DIR)/$(1)$(BOX_SUFFIX)
+
+upload-$(1): upload-$(VMWARE_BOX_DIR)/$(1)$(BOX_SUFFIX) upload-$(VIRTUALBOX_BOX_DIR)/$(1)$(BOX_SUFFIX) upload-$(PARALLELS_BOX_DIR)/$(1)$(BOX_SUFFIX)
+
+upload-vmware/$(1): upload-$(VMWARE_BOX_DIR)/$(1)$(BOX_SUFFIX)
+
+upload-virtualbox/$(1): upload-$(VIRTUALBOX_BOX_DIR)/$(1)$(BOX_SUFFIX)
+
+upload-parallels/$(1): upload-$(PARALLELS_BOX_DIR)/$(1)$(BOX_SUFFIX)
+
+s3cp-$(1): s3cp-$(VMWARE_BOX_DIR)/$(1)$(BOX_SUFFIX) s3cp-$(VIRTUALBOX_BOX_DIR)/$(1)$(BOX_SUFFIX) s3cp-$(PARALLELS_BOX_DIR)/$(1)$(BOX_SUFFIX)
+
+s3cp-vmware/$(1): s3cp-$(VMWARE_BOX_DIR)/$(1)$(BOX_SUFFIX)
+
+s3cp-virtualbox/$(1): s3cp-$(VIRTUALBOX_BOX_DIR)/$(1)$(BOX_SUFFIX)
+
+s3cp-parallels/$(1): s3cp-$(PARALLELS_BOX_DIR)/$(1)$(BOX_SUFFIX)
 
 endef
 
@@ -288,3 +312,24 @@ test-$(PARALLELS_BOX_DIR)/%$(BOX_SUFFIX): $(PARALLELS_BOX_DIR)/%$(BOX_SUFFIX)
 
 ssh-$(PARALLELS_BOX_DIR)/%$(BOX_SUFFIX): $(PARALLELS_BOX_DIR)/%$(BOX_SUFFIX)
 	bin/ssh-box.sh $< parallels parallels $(CURRENT_DIR)/test/*_spec.rb
+
+upload-$(VMWARE_BOX_DIR)/%$(BOX_SUFFIX): $(VMWARE_BOX_DIR)/%$(BOX_SUFFIX)
+	aws s3 cp $< $(VMWARE_S3_BUCKET) --storage-class REDUCED_REDUNDANCY --grants full=$(S3_GRANT_ID) read=$(ALLUSERS_ID)
+
+upload-$(VIRTUALBOX_BOX_DIR)/%$(BOX_SUFFIX): $(VIRTUALBOX_BOX_DIR)/%$(BOX_SUFFIX)
+	aws s3 cp $< $(VIRTUALBOX_S3_BUCKET) --storage-class REDUCED_REDUNDANCY --grants full=$(S3_GRANT_ID) read=$(ALLUSERS_ID)
+
+upload-$(PARALLELS_BOX_DIR)/%$(BOX_SUFFIX): $(PARALLELS_BOX_DIR)/%$(BOX_SUFFIX)
+	aws s3 cp $< $(PARALLELS_S3_BUCKET) --storage-class REDUCED_REDUNDANCY --grants full=$(S3_GRANT_ID) read=$(ALLUSERS_ID)
+
+S3_STORAGE_CLASS ?= REDUCED_REDUNDANCY
+S3_ALLUSERS_ID ?= uri=http://acs.amazonaws.com/groups/global/AllUsers
+
+s3cp-$(VMWARE_BOX_DIR)/%$(BOX_SUFFIX): $(VMWARE_BOX_DIR)/%$(BOX_SUFFIX)
+	aws s3 cp $< $(VMWARE_S3_BUCKET) --storage-class $(S3_STORAGE_CLASS) --grants full=$(S3_GRANT_ID) read=$(S3_ALLUSERS_ID)
+
+s3cp-$(VIRTUALBOX_BOX_DIR)/%$(BOX_SUFFIX): $(VIRTUALBOX_BOX_DIR)/%$(BOX_SUFFIX)
+	aws s3 cp $< $(VIRTUALBOX_S3_BUCKET) --storage-class $(S3_STORAGE_CLASS) --grants full=$(S3_GRANT_ID) read=$(S3_ALLUSERS_ID)
+
+s3cp-$(PARALLELS_BOX_DIR)/%$(BOX_SUFFIX): $(PARALLELS_BOX_DIR)/%$(BOX_SUFFIX)
+	aws s3 cp $< $(PARALLELS_S3_BUCKET) --storage-class $(S3_STORAGE_CLASS) --grants full=$(S3_GRANT_ID) read=$(S3_ALLUSERS_ID)
