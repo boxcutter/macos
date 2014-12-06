@@ -185,7 +185,7 @@ $(VIRTUALBOX_BOX_DIR)/osx1010$(BOX_SUFFIX): osx1010.json $(SOURCES) dmg/$(MAC_OS
 	mkdir -p $(VIRTUALBOX_BOX_DIR)
 	$(PACKER) build -only=$(VIRTUALBOX_BUILDER) $(PACKER_VARS) -var "iso_url=dmg/$(MAC_OSX_10_10_YOSEMITE_BOOT_DMG)" $<
 
-$(VIRTUALBOX_BOX_DIR)/osx1010-desktop$(BOX_SUFFIX): osx1010-desktop.json $(SOURCES) tpl/vagrantfile-osx1010-desktop.tpl
+$(VIRTUALBOX_BOX_DIR)/osx1010-desktop$(BOX_SUFFIX): osx1010-desktop.json $(SOURCES) tpl/vagrantfile-osx1010-desktop.tpl dmg/$(MAC_OSX_10_10_YOSEMITE_BOOT_DMG)
 	rm -rf $(VIRTUALBOX_OUTPUT)
 	mkdir -p $(VIRTUALBOX_BOX_DIR)
 	$(PACKER) build -only=$(VIRTUALBOX_BUILDER) $(PACKER_VARS) -var "iso_url=dmg/$(MAC_OSX_10_10_YOSEMITE_BOOT_DMG)" $<
@@ -195,7 +195,7 @@ $(VIRTUALBOX_BOX_DIR)/osx109$(BOX_SUFFIX): osx109.json $(SOURCES) dmg/$(MAC_OSX_
 	mkdir -p $(VIRTUALBOX_BOX_DIR)
 	$(PACKER) build -only=$(VIRTUALBOX_BUILDER) $(PACKER_VARS) -var "iso_url=dmg/$(MAC_OSX_10_9_MAVERICKS_BOOT_DMG)" $<
 
-$(VIRTUALBOX_BOX_DIR)/osx109-desktop$(BOX_SUFFIX): osx109-desktop.json $(SOURCES) tpl/vagrantfile-osx109-desktop.tpl
+$(VIRTUALBOX_BOX_DIR)/osx109-desktop$(BOX_SUFFIX): osx109-desktop.json $(SOURCES) tpl/vagrantfile-osx109-desktop.tpl dmg/$(MAC_OSX_10_9_MAVERICKS_BOOT_DMG)
 	rm -rf $(VIRTUALBOX_OUTPUT)
 	mkdir -p $(VIRTUALBOX_BOX_DIR)
 	$(PACKER) build -only=$(VIRTUALBOX_BUILDER) $(PACKER_VARS) -var "iso_url=dmg/$(MAC_OSX_10_9_MAVERICKS_BOOT_DMG)" $<
