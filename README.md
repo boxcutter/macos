@@ -1,5 +1,4 @@
 # Packer templates for Mac OS X
-[![Build Status](https://box-cutter.ci.cloudbees.com/buildStatus/icon?job=osx-vm)](https://box-cutter.ci.cloudbees.com/job/osx-vm/)
 
 ### Overview
 
@@ -96,9 +95,3 @@ You can also override these setting, such as with
 7. If you have a large change in mind, it is still preferred that you split them into small commits.  Good commit messages are important.  The git documentatproject has some nice guidelines on [writing descriptive commit messages](http://git-scm.com/book/ch5-2.html#Commit-Guidelines).
 8. Push to your fork and submit a pull request.
 9. Once submitted, a full `make test` run will be performed against your change in the build farm.  You will be notified if the test suite fails.
-
-## Acknowledgments
-
-[CloudBees](http://www.cloudbees.com) is providing a hosted [Jenkins master](http://box-cutter.ci.cloudbees.com/) through their CloudBees FOSS program. Their [On-Premise Executor](https://developer.cloudbees.com/bin/view/DEV/On-Premise+Executors) feature is used to connect physical machines as build slaves running VirtualBox, VMware Fusion, VMware Workstation, VMware ESXi/vSphere and Hyper-V.
-
-![Powered By CloudBees](http://www.cloudbees.com/sites/default/files/Button-Powered-by-CB.png "Powered By CloudBees")![Built On DEV@Cloud](http://www.cloudbees.com/sites/default/files/Button-Built-on-CB-1.png "Built On DEV@Cloud")
