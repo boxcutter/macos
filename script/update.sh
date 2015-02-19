@@ -1,9 +1,11 @@
 #!/bin/bash -eux
 
-[[ ! $UPDATE ]] && exit
+if [[ $UPDATE  =~ true || $UPDATE =~ 1 || $UPDATE =~ yes ]]; then
 
-echo "==> Running software update"
-softwareupdate --install --all -v
+    echo "==> Running software update"
+    softwareupdate --install --all -v
 
-echo "==> Rebooting the machine"
-reboot
+    echo "==> Rebooting the machine"
+    reboot
+
+fi
