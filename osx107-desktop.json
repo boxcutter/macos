@@ -102,6 +102,7 @@
     {
       "type": "shell",
       "environment_vars": [
+        "AUTOLOGIN={{user `autologin`}}",
         "CM={{user `cm`}}",
         "CM_VERSION={{user `cm_version`}}",
         "UPDATE={{user `update`}}",
