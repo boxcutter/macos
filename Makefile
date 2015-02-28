@@ -3,12 +3,12 @@ ifneq ("$(wildcard Makefile.local)", "")
 	include Makefile.local
 endif
 
-MAC_OSX_10_7_LION_INSTALLER ?= iso/OS\ X\ Lion/InstallESD.dmg
+MAC_OSX_10_7_LION_INSTALLER ?= iso/OS\ X\ Lion/Install\ OS\ X\ Lion.app
 MAC_OSX_10_8_MOUNTAIN_LION_INSTALLER ?= iso/OS\ X\ Mountain\ Lion/InstallESD.dmg
 MAC_OSX_10_9_MAVERICKS_INSTALLER ?= iso/OS\ X\ Mavericks/Install\ OS\ X\ Mavericks.app
 MAC_OSX_10_10_YOSEMITE_INSTALLER ?= iso/OS\ X\ Yosemite/Install\ OS\ X\ Yosemite.app
 
-MAC_OSX_10_7_LION_BOOT_DMG ?= OSX_InstallESD_10.7_11A511.dmg
+MAC_OSX_10_7_LION_BOOT_DMG ?= OSX_InstallESD_10.7.5_11G63.dmg
 MAC_OSX_10_8_MOUNTAIN_LION_BOOT_DMG ?= OSX_InstallESD_10.8_12A269.dmg
 MAC_OSX_10_9_MAVERICKS_BOOT_DMG ?= OSX_InstallESD_10.9_13A603.dmg
 MAC_OSX_10_10_YOSEMITE_BOOT_DMG ?= OSX_InstallESD_10.10_14A389.dmg
