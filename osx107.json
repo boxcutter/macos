@@ -59,7 +59,7 @@
       ["modifyvm", "{{.Name}}", "--boot1", "dvd"],
       ["modifyvm", "{{.Name}}", "--boot2", "disk"],
       ["modifyvm", "{{.Name}}", "--chipset", "ich9"],
-      ["modifyvm", "{{.Name}}", "--cpuidset", "00000001", "000306a9", "00020800", "80000201", "178bfbff"],
+      ["modifyvm", "{{.Name}}", "--cpuidset", "00000001", "000006fb", "00000800", "80000209", "078bfbff"],
       ["modifyvm", "{{.Name}}", "--firmware", "efi"],
       ["modifyvm", "{{.Name}}", "--hpet", "on"],
       ["modifyvm", "{{.Name}}", "--keyboard", "usb"],
