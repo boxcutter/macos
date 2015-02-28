@@ -100,6 +100,11 @@
   }],
   "provisioners": [
     {
+      "type": "file",
+      "source": "script/support/set_kcpassword.py",
+      "destination": "/private/tmp/set_kcpassword.py"
+    },
+    {
       "type": "shell",
       "environment_vars": [
         "AUTOLOGIN={{user `autologin`}}",
@@ -108,7 +113,8 @@
         "UPDATE={{user `update`}}",
         "INSTALL_XCODE_CLI_TOOLS={{user `install_xcode_cli_tools`}}",
         "INSTALL_VAGRANT_KEYS={{user `install_vagrant_keys`}}",
-        "SSH_USERNAME={{ user `ssh_username` }}"
+        "SSH_USERNAME={{ user `ssh_username` }}",
+        "SSH_PASSWORD={{ user `ssh_password` }}"
       ],
       "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E -S bash '{{ .Path }}'",
       "scripts": [
@@ -118,22 +124,8 @@
         "script/cmtool.sh",
         "script/vmware.sh",
         "script/parallels.sh",
-        "script/add-network-interface-detection.sh"
-      ]
-    },
-    {
-      "type": "file",
-      "source": "script/support/set_kcpassword.py",
-      "destination": "/private/tmp/set_kcpassword.py"
-    },
-    {
-      "type": "shell",
-      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
-      "inline": [
-        "if [ \"{{user `autologin`}}\" != \"true\" ] && [ \"{{user `autologin`}}\" != \"1\" ]; then exit; fi",
-        "echo \"Enabling automatic GUI login for the '{{ user `ssh_username` }}' user..\"",
-        "python /private/tmp/set_kcpassword.py \"{{ user `ssh_password` }}\"",
-        "/usr/bin/defaults write /Library/Preferences/com.apple.loginwindow autoLoginUser \"{{ user `ssh_username` }}\""
+        "script/add-network-interface-detection.sh",
+        "script/autologin.sh"
       ]
     }
   ],
