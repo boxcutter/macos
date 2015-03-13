@@ -4,12 +4,12 @@ ifneq ("$(wildcard Makefile.local)", "")
 endif
 
 MAC_OSX_10_7_LION_INSTALLER ?= iso/OS\ X\ Lion/Install\ OS\ X\ Lion.app
-MAC_OSX_10_8_MOUNTAIN_LION_INSTALLER ?= iso/OS\ X\ Mountain\ Lion/InstallESD.dmg
+MAC_OSX_10_8_MOUNTAIN_LION_INSTALLER ?= iso/OS\ X\ Mountain\ Lion/Install\ OS\ X\ Mountain\ lion.app
 MAC_OSX_10_9_MAVERICKS_INSTALLER ?= iso/OS\ X\ Mavericks/Install\ OS\ X\ Mavericks.app
 MAC_OSX_10_10_YOSEMITE_INSTALLER ?= iso/OS\ X\ Yosemite/Install\ OS\ X\ Yosemite.app
 
 MAC_OSX_10_7_LION_BOOT_DMG ?= OSX_InstallESD_10.7.5_11G63.dmg
-MAC_OSX_10_8_MOUNTAIN_LION_BOOT_DMG ?= OSX_InstallESD_10.8_12A269.dmg
+MAC_OSX_10_8_MOUNTAIN_LION_BOOT_DMG ?= OSX_InstallESD_10.8.5_12F45.dmg
 MAC_OSX_10_9_MAVERICKS_BOOT_DMG ?= OSX_InstallESD_10.9_13A603.dmg
 MAC_OSX_10_10_YOSEMITE_BOOT_DMG ?= OSX_InstallESD_10.10_14A389.dmg
 
@@ -52,12 +52,13 @@ VIRTUALBOX_BOX_DIR := box/virtualbox
 PARALLELS_BOX_DIR := box/parallels
 TEMPLATE_FILENAMES := $(wildcard *.json)
 BOX_FILENAMES := $(TEMPLATE_FILENAMES:.json=$(BOX_SUFFIX))
-VMWARE_BOX_FILENAMES := $(TEMPLATE_FILENAMES:.json=$(BOX_SUFFIX))
-VMWARE_BOX_FILES := $(foreach box_filename, $(VMWARE_BOX_FILENAMES), $(VMWARE_BOX_DIR)/$(box-filename))
-VIRTUALBOX_TEMPLATE_FILENAMES = osx1010-desktop.json osx1010.json osx109-desktop.json osx109.json osx108-desktop.json osx108.json
+VMWARE_TEMPLATE_FILENAMES := $(filter-out osx107-desktop.json osx107.json,$(TEMPLATE_FILENAMES))
+VMWARE_BOX_FILENAMES := $(VMWARE_TEMPLATE_FILENAMES:.json=$(BOX_SUFFIX))
+VMWARE_BOX_FILES := $(foreach box_filename,$(VMWARE_BOX_FILENAMES),$(VMWARE_BOX_DIR)/$(box_filename))
+VIRTUALBOX_TEMPLATE_FILENAMES = $(filter-out osx1010-desktop.json osx1010.json osx109-desktop.json osx109.json osx108-desktop.json osx108.json,$(TEMPLATE_FILENAMES))
 VIRTUALBOX_BOX_FILENAMES := $(VIRTUALBOX_TEMPLATE_FILENAMES:.json=$(BOX_SUFFIX))
 VIRTUALBOX_BOX_FILES := $(foreach box_filename, $(VIRTUALBOX_BOX_FILENAMES), $(VIRTUALBOX_BOX_DIR)/$(box_filename))
-PARALLELS_TEMPLATE_FILENAMES = osx1010.json osx109.json osx108.json
+PARALLELS_TEMPLATE_FILENAMES = $(filter-out osx1010-desktop.json osx109-desktop.json osx108-desktop.json osx107-desktop.json osx107.json,$(TEMPLATE_FILENAMES))
 PARALLELS_BOX_FILENAMES := $(PARALLELS_TEMPLATE_FILENAMES:.json=$(BOX_SUFFIX))
 PARALLELS_BOX_FILES := $(foreach box_filename, $(PARALLELS_BOX_FILENAMES), $(PARALLELS_BOX_DIR)/$(box_filename))
 BOX_FILES := $(VMWARE_BOX_FILES) $(VIRTUALBOX_BOX_FILES) $(PARALLELS_BOX_FILES)
