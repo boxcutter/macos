@@ -123,7 +123,8 @@
         "script/vmware.sh",
         "script/parallels.sh",
         "script/add-network-interface-detection.sh",
-        "script/autologin.sh"
+        "script/autologin.sh",
+        "script/minimize.sh"
       ]
     }
   ],
