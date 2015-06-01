@@ -38,9 +38,10 @@ endif
 PACKER_VARS_LIST = 'cm=$(CM)' 'update=$(UPDATE)' 'install_xcode_cli_tools=$(INSTALL_XCODE_CLI_TOOLS)' 'version=$(BOX_VERSION)' 'ssh_username=$(SSH_USERNAME)' 'ssh_password=$(SSH_PASSWORD)' 'install_vagrant_keys=$(INSTALL_VAGRANT_KEYS)'
 ifdef CM_VERSION
 	PACKER_VARS_LIST += 'cm_version=$(CM_VERSION)'
-else
-PACKER_VARS := $(addprefix -var , $(PACKER_VARS_LIST))
 endif
+
+PACKER_VARS := $(addprefix -var , $(PACKER_VARS_LIST))
+
 ifdef PACKER_DEBUG
 	PACKER := PACKER_LOG=1 packer --debug
 else
