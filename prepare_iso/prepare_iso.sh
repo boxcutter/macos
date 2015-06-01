@@ -28,10 +28,10 @@ usage() {
 	cat <<EOF
 Usage:
 $(basename "$0") [-upi] "/path/to/InstallESD.dmg" /path/to/output/directory
-$(basename "$0") [-upi] "/path/to/Install OS X [Mountain] Lion.app" /path/to/output/directory
+$(basename "$0") [-upi] "/path/to/Install OS X [Name].app" /path/to/output/directory
 
 Description:
-Converts a 10.7/10.8/10.9 installer image to a new image that contains components
+Converts an OS X installer to a new image that contains components
 used to perform an automated installation. The new image will be named
 'OSX_InstallESD_[osversion].dmg.'
 
@@ -56,7 +56,7 @@ msg_error() {
 }
 
 render_template() {
-  eval "echo \"$(cat $1)\""
+  eval "echo \"$(cat "$1")\""
 }
 
 if [ $# -eq 0 ]; then
@@ -64,7 +64,7 @@ if [ $# -eq 0 ]; then
 	exit 1
 fi
 
-SCRIPT_DIR="$(cd $(dirname "$0"); pwd)"
+SCRIPT_DIR="$(cd "$(dirname "$0")"; pwd)"
 SUPPORT_DIR="$SCRIPT_DIR/support"
 
 # Parse the optional command line switches
@@ -91,7 +91,7 @@ while getopts u:p:i: OPT; do
 done
 
 # Remove the switches we parsed above.
-shift `expr $OPTIND - 1`
+shift $(expr $OPTIND - 1)
 
 if [ $(id -u) -ne 0 ]; then
 	msg_error "This script must be run as root, as it saves a disk image with ownerships enabled."
@@ -116,9 +116,9 @@ fi
 VEEWEE_DIR="$(cd "$SCRIPT_DIR/../../../"; pwd)"
 VEEWEE_UID=$(stat -f %u "$VEEWEE_DIR")
 VEEWEE_GID=$(stat -f %g "$VEEWEE_DIR")
-DEFINITION_DIR="$(cd $SCRIPT_DIR/..; pwd)"
+DEFINITION_DIR="$(cd "$SCRIPT_DIR/.."; pwd)"
 
-if [ "$2" == "" ]; then
+if [ "$2" = "" ]; then
     msg_error "Currently an explicit output directory is required as the second argument."
 	exit 1
 	# The rest is left over from the old prepare_veewee_iso.sh script. Not sure if we
@@ -131,7 +131,7 @@ if [ "$2" == "" ]; then
 		mkdir "../../../iso"
 		chown $VEEWEE_UID:$VEEWEE_GID "../../../iso"
 	fi
-	OUT_DIR="$(cd $SCRIPT_DIR; cd ../../../iso; pwd)"
+	OUT_DIR="$(cd "$SCRIPT_DIR"; cd ../../../iso; pwd)"
 	cd "$OLDPWD" # Rest of script depends on being in the working directory if we were passed relative paths
 else
 	OUT_DIR="$2"
@@ -193,7 +193,7 @@ BASE64_IMAGE=$(openssl base64 -in "$IMAGE_PATH")
 render_template "$SUPPORT_DIR/user.plist" > "$SUPPORT_DIR/pkgroot/private/var/db/dslocal/nodes/Default/users/$USER.plist"
 USER_GUID=$(/usr/libexec/PlistBuddy -c 'Print :generateduid:0' "$SUPPORT_DIR/user.plist")
 # Generate a shadowhash from the supplied password
-$SUPPORT_DIR/generate_shadowhash "$PASSWORD" > "$SUPPORT_DIR/pkgroot/private/var/db/shadow/hash/$USER_GUID"
+"$SUPPORT_DIR/generate_shadowhash" "$PASSWORD" > "$SUPPORT_DIR/pkgroot/private/var/db/shadow/hash/$USER_GUID"
 
 # postinstall script
 mkdir -p "$SUPPORT_DIR/tmp/Scripts"
@@ -269,7 +269,7 @@ msg_status "Unmounting ESD.."
 hdiutil detach "$MNT_ESD"
 
 if [ $DMG_OS_VERS_MAJOR -ge 9 ]; then
-	msg_status "On Mavericks the entire modified BaseSystem is our output dmg."
+	msg_status "On Mavericks and later, the entire modified BaseSystem is our output dmg."
 	hdiutil convert -format UDZO -o "$OUTPUT_DMG" "$BASE_SYSTEM_DMG_RW"
 else
 	msg_status "Pre-Mavericks we're modifying the original ESD file."
@@ -285,7 +285,7 @@ fi
 
 if [ -n "$DEFAULT_ISO_DIR" ]; then
 	DEFINITION_FILE="$DEFINITION_DIR/definition.rb"
-	msg_status "Setting ISO file in definition "$DEFINITION_FILE".."
+	msg_status "Setting ISO file in definition $DEFINITION_FILE.."
 	ISO_FILE=$(basename "$OUTPUT_DMG")
 	# Explicitly use -e in order to use double quotes around sed command
 	sed -i -e "s/%OSX_ISO%/${ISO_FILE}/" "$DEFINITION_FILE"
