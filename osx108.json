@@ -117,12 +117,12 @@
       "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E -S bash '{{ .Path }}'",
       "scripts": [
         "script/vagrant.sh",
+        "script/autologin.sh",
         "script/update.sh",
         "script/xcode-cli-tools.sh",
         "script/cmtool.sh",
         "script/vmware.sh",
         "script/add-network-interface-detection.sh",
-        "script/autologin.sh",
         "script/minimize.sh"
       ]
     }
