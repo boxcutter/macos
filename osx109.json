@@ -9,7 +9,7 @@
     "update": "true",
     "ssh_username": "vagrant",
     "ssh_password": "vagrant",
-    "install_vagrant_keys": true
+    "install_vagrant_keys": "true"
   },
   "builders": [{
     "vm_name": "osx109",
