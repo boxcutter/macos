@@ -30,7 +30,7 @@ You will also need copies on the install media for Mac OS X, either the
 OS X you want to install.
 
 By default, the install media files are expected to be in the following
-locations (but can be overridden as they are Makefile variables):
+relative path locations (but can be overridden as they are Makefile variables):
 
     10.7 Lion:          iso/OS\ X\ Lion/Install\ OS\ X\ Lion.app
     10.8 Mountain Lion: iso/OS\ X\ Mountain\ Lion/Install\ OS\ X\ Mountain\ lion.app
