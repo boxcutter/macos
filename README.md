@@ -32,10 +32,10 @@ OS X you want to install.
 By default, the install media files are expected to be in the following
 locations (but can be overridden as they are Makefile variables):
 
-    iso/OS\ X\ Lion/Install\ OS\ X\ Lion.app -  MAC_OSX_10_7_LION_INSTALLER
-    iso/OS\ X\ Mountain\ Lion/Install\ OS\ X\ Mountain\ lion.app - MAC_OSX_10_8_MOUNTAIN_LION_INSTALLER
-    iso/OS\ X\ Mavericks/Install\ OS\ X\ Mavericks.app - MAC_OSX_10_9_MAVERICKS_INSTALLER
-    iso/OS\ X\ Yosemite/Install\ OS\ X\ Yosemite.app - MAC_OSX_10_10_YOSEMITE_INSTALLER
+    iso/OS\ X\ Lion/Install\ OS\ X\ Lion.app -  10.7 Lion
+    iso/OS\ X\ Mountain\ Lion/Install\ OS\ X\ Mountain\ lion.app - 10.8 Mountain Lion
+    iso/OS\ X\ Mavericks/Install\ OS\ X\ Mavericks.app - 10.9 Mavericks
+    iso/OS\ X\ Yosemite/Install\ OS\ X\ Yosemite.app - 10.10 Yosemite
 
 A GNU Make `Makefile` drives the process via the following targets:
 
