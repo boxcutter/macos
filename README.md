@@ -18,7 +18,24 @@ Vagrant boxes using Packer.
 
 ## Building the Vagrant boxes
 
-To build all the boxes, you will need both VMware Fusion and VirtualBox  installed.
+To build all the boxes, you will need VirtualBox, VMware Fusion and 
+Parallels Desktop for Mac installed.
+
+Parallels requires that the
+[Parallels Virtualization SDK for Mac](http://www.parallels.com/downloads/desktop)
+be installed as an additional preqrequisite.
+
+You will also need copies on the install media for Mac OS X, either the
+`Install OS X.app` or `InstallESD.dmg` file for the version(s) of Mac
+OS X you want to install.
+
+By default, the install media files are expected to be in the following
+locations (but can be overridden as they are Makefile variables):
+
+    iso/OS\ X\ Lion/Install\ OS\ X\ Lion.app -  MAC_OSX_10_7_LION_INSTALLER
+    iso/OS\ X\ Mountain\ Lion/Install\ OS\ X\ Mountain\ lion.app - MAC_OSX_10_8_MOUNTAIN_LION_INSTALLER
+    iso/OS\ X\ Mavericks/Install\ OS\ X\ Mavericks.app - MAC_OSX_10_9_MAVERICKS_INSTALLER
+    iso/OS\ X\ Yosemite/Install\ OS\ X\ Yosemite.app - MAC_OSX_10_10_YOSEMITE_INSTALLER
 
 A GNU Make `Makefile` drives the process via the following targets:
 
