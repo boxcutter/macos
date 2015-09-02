@@ -6,12 +6,14 @@ endif
 MAC_OSX_10_7_LION_INSTALLER ?= iso/OS\ X\ Lion/Install\ OS\ X\ Lion.app
 MAC_OSX_10_8_MOUNTAIN_LION_INSTALLER ?= iso/OS\ X\ Mountain\ Lion/Install\ OS\ X\ Mountain\ lion.app
 MAC_OSX_10_9_MAVERICKS_INSTALLER ?= iso/OS\ X\ Mavericks/Install\ OS\ X\ Mavericks.app
-MAC_OSX_10_10_YOSEMITE_INSTALLER ?= iso/OS\ X\ Yosemite/Install\ OS\ X\ Yosemite.app
+MAC_OSX_10_10_YOSEMITE_INSTALLER ?= iso/Install\ OS\ X\ Yosemite.app
+MAC_OSX_10_11_EL_CAPITAN_INSTALLER ?= iso/Install\ OS\ X\ El\ Capitan\ Developer\ Beta.app
 
 MAC_OSX_10_7_LION_BOOT_DMG ?= OSX_InstallESD_10.7.5_11G63.dmg
 MAC_OSX_10_8_MOUNTAIN_LION_BOOT_DMG ?= OSX_InstallESD_10.8.5_12F45.dmg
 MAC_OSX_10_9_MAVERICKS_BOOT_DMG ?= OSX_InstallESD_10.9_13A603.dmg
-MAC_OSX_10_10_YOSEMITE_BOOT_DMG ?= OSX_InstallESD_10.10_14A389.dmg
+MAC_OSX_10_10_YOSEMITE_BOOT_DMG ?= OSX_InstallESD_10.10.5_14F27.dmg
+MAC_OSX_10_11_EL_CAPITAN_BOOT_DMG ?= OSX_InstallESD_10.11_15A264e.dmg
 
 # Possible values for CM: (nocm | chef | chefdk | salt | puppet)
 CM ?= nocm
@@ -141,6 +143,15 @@ dmg/$(MAC_OSX_10_9_MAVERICKS_BOOT_DMG): $(MAC_OSX_10_9_MAVERICKS_INSTALLER)
 dmg/$(MAC_OSX_10_10_YOSEMITE_BOOT_DMG): $(MAC_OSX_10_10_YOSEMITE_INSTALLER)
 	mkdir -p dmg
 	sudo prepare_iso/prepare_iso.sh $(MAC_OSX_10_10_YOSEMITE_INSTALLER) dmg
+
+dmg/$(MAC_OSX_10_11_EL_CAPITAN_BOOT_DMG): $(MAC_OSX_10_11_EL_CAPITAN_INSTALLER)
+	mkdir -p dmg
+	sudo prepare_iso/prepare_iso.sh $(MAC_OSX_10_11_EL_CAPITAN_INSTALLER) dmg
+
+$(VMWARE_BOX_DIR)/osx1011$(BOX_SUFFIX): osx1011.json $(SOURCES) dmg/$(MAC_OSX_10_11_EL_CAPITAN_BOOT_DMG)
+	rm -rf $(VMWARE_OUTPUT)
+	mkdir -p $(VMWARE_BOX_DIR)
+	$(PACKER) build -only=$(VMWARE_BUILDER) $(PACKER_VARS) -var "iso_url=dmg/$(MAC_OSX_10_11_EL_CAPITAN_BOOT_DMG)" $<
 
 $(VMWARE_BOX_DIR)/osx1010$(BOX_SUFFIX): osx1010.json $(SOURCES) dmg/$(MAC_OSX_10_10_YOSEMITE_BOOT_DMG)
 	rm -rf $(VMWARE_OUTPUT)
