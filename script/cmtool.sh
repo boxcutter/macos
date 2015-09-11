@@ -90,8 +90,8 @@ function get_dmg() {
     local version="$2"
 
     # Run AutoPkg setting VERSION, and saving the results as a plist
-    "${AUTOPKG}" run --report-plist ${recipe_name} -k VERSION="${version}" > /tmp/autopkg-puppet-report.plist
-    echo $(/usr/libexec/PlistBuddy -c 'Print :new_downloads:0' /tmp/autopkg-puppet-report.plist)
+    "${AUTOPKG}" run --report-plist=/tmp/autopkg-puppet-report.plist ${recipe_name} -k VERSION="${version}" 1>&2
+    echo $(/usr/libexec/PlistBuddy -c 'Print summary_results:url_downloader_summary_result:data_rows:0:download_path' /tmp/autopkg-puppet-report.plist)
 }
 
 install_puppet() {
@@ -107,6 +107,10 @@ install_puppet() {
     PUPPET_DMG=$(get_dmg Puppet.download "${CM_VERSION}")
     FACTER_DMG=$(get_dmg Facter.download "${FACTER_VERSION}")
     HIERA_DMG=$(get_dmg Hiera.download "${HIERA_VERSION}")
+
+    echo "Puppet DMG: $PUPPET_DMG"
+    echo "Hiera  DMG: $HIERA_DMG"
+    echo "Facter DMG: $FACTER_DMG"
 
     # Install them
     install_dmg "Puppet" "${PUPPET_DMG}"
