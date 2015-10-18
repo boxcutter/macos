@@ -7,13 +7,13 @@ MAC_OSX_10_7_LION_INSTALLER ?= iso/OS\ X\ Lion/Install\ OS\ X\ Lion.app
 MAC_OSX_10_8_MOUNTAIN_LION_INSTALLER ?= iso/OS\ X\ Mountain\ Lion/Install\ OS\ X\ Mountain\ lion.app
 MAC_OSX_10_9_MAVERICKS_INSTALLER ?= iso/OS\ X\ Mavericks/Install\ OS\ X\ Mavericks.app
 MAC_OSX_10_10_YOSEMITE_INSTALLER ?= iso/Install\ OS\ X\ Yosemite.app
-MAC_OSX_10_11_EL_CAPITAN_INSTALLER ?= iso/Install\ OS\ X\ El\ Capitan\ Developer\ Beta.app
+MAC_OSX_10_11_EL_CAPITAN_INSTALLER ?= iso/Install\ OS\ X\ El\ Capitan.app
 
 MAC_OSX_10_7_LION_BOOT_DMG ?= OSX_InstallESD_10.7.5_11G63.dmg
 MAC_OSX_10_8_MOUNTAIN_LION_BOOT_DMG ?= OSX_InstallESD_10.8.5_12F45.dmg
 MAC_OSX_10_9_MAVERICKS_BOOT_DMG ?= OSX_InstallESD_10.9_13A603.dmg
 MAC_OSX_10_10_YOSEMITE_BOOT_DMG ?= OSX_InstallESD_10.10.5_14F27.dmg
-MAC_OSX_10_11_EL_CAPITAN_BOOT_DMG ?= OSX_InstallESD_10.11_15A264e.dmg
+MAC_OSX_10_11_EL_CAPITAN_BOOT_DMG ?= OSX_InstallESD_10.11_15A284.dmg
 
 # Possible values for CM: (nocm | chef | chefdk | salt | puppet)
 CM ?= nocm
@@ -153,6 +153,11 @@ $(VMWARE_BOX_DIR)/osx1011$(BOX_SUFFIX): osx1011.json $(SOURCES) dmg/$(MAC_OSX_10
 	mkdir -p $(VMWARE_BOX_DIR)
 	$(PACKER) build -only=$(VMWARE_BUILDER) $(PACKER_VARS) -var "iso_url=dmg/$(MAC_OSX_10_11_EL_CAPITAN_BOOT_DMG)" $<
 
+$(VMWARE_BOX_DIR)/osx1011-desktop$(BOX_SUFFIX): osx1011-desktop.json $(SOURCES) tpl/vagrantfile-osx1011-desktop.tpl dmg/$(MAC_OSX_10_11_EL_CAPITAN_BOOT_DMG)
+	rm -rf $(VMWARE_OUTPUT)
+	mkdir -p $(VMWARE_BOX_DIR)
+	$(PACKER) build -only=$(VMWARE_BUILDER) $(PACKER_VARS) -var "iso_url=dmg/$(MAC_OSX_10_11_EL_CAPITAN_BOOT_DMG)" $<
+
 $(VMWARE_BOX_DIR)/osx1010$(BOX_SUFFIX): osx1010.json $(SOURCES) dmg/$(MAC_OSX_10_10_YOSEMITE_BOOT_DMG)
 	rm -rf $(VMWARE_OUTPUT)
 	mkdir -p $(VMWARE_BOX_DIR)
@@ -193,6 +198,16 @@ $(VMWARE_BOX_DIR)/osx107-desktop$(BOX_SUFFIX): osx107-desktop.json $(SOURCES) tp
 	mkdir -p $(VMWARE_BOX_DIR)
 	$(PACKER) build -only=$(VMWARE_BUILDER) $(PACKER_VARS) -var "iso_url=dmg/$(MAC_OSX_10_7_LION_BOOT_DMG)" $<
 
+$(VIRTUALBOX_BOX_DIR)/osx1011$(BOX_SUFFIX): osx1011.json $(SOURCES) dmg/$(MAC_OSX_10_11_EL_CAPITAN_BOOT_DMG)
+	rm -rf $(VIRTUALBOX_OUTPUT)
+	mkdir -p $(VIRTUALBOX_BOX_DIR)
+	$(PACKER) build -only=$(VIRTUALBOX_BUILDER) $(PACKER_VARS) -var "iso_url=dmg/$(MAC_OSX_10_11_EL_CAPITAN_BOOT_DMG)" $<
+
+$(VIRTUALBOX_BOX_DIR)/osx1011-desktop$(BOX_SUFFIX): osx1011-desktop.json $(SOURCES) tpl/vagrantfile-osx1011-desktop.tpl dmg/$(MAC_OSX_10_11_EL_CAPITAN_BOOT_DMG)
+	rm -rf $(VIRTUALBOX_OUTPUT)
+	mkdir -p $(VIRTUALBOX_BOX_DIR)
+	$(PACKER) build -only=$(VIRTUALBOX_BUILDER) $(PACKER_VARS) -var "iso_url=dmg/$(MAC_OSX_10_11_EL_CAPITAN_BOOT_DMG)" $<
+
 $(VIRTUALBOX_BOX_DIR)/osx1010$(BOX_SUFFIX): osx1010.json $(SOURCES) dmg/$(MAC_OSX_10_10_YOSEMITE_BOOT_DMG)
 	rm -rf $(VIRTUALBOX_OUTPUT)
 	mkdir -p $(VIRTUALBOX_BOX_DIR)
@@ -232,6 +247,16 @@ $(VIRTUALBOX_BOX_DIR)/osx107-desktop$(BOX_SUFFIX): osx107-desktop.json $(SOURCES
 	rm -rf $(VIRTUALBOX_OUTPUT)
 	mkdir -p $(VIRTUALBOX_BOX_DIR)
 	$(PACKER) build -only=$(VIRTUALBOX_BUILDER) $(PACKER_VARS) -var "iso_url=dmg/$(MAC_OSX_10_7_LION_BOOT_DMG)" $<
+
+$(PARALLELS_BOX_DIR)/osx1011$(BOX_SUFFIX): osx1011.json $(SOURCES) dmg/$(MAC_OSX_10_11_EL_CAPITAN_BOOT_DMG)
+	rm -rf $(PARALLELS_OUTPUT)
+	mkdir -p $(PARALLELS_BOX_DIR)
+	$(PACKER) build -only=$(PARALLELS_BUILDER) $(PACKER_VARS) -var "iso_url=dmg/$(MAC_OSX_10_11_EL_CAPITAN_BOOT_DMG)" $<
+
+$(PARALLELS_BOX_DIR)/osx1011-desktop$(BOX_SUFFIX): osx1011-desktop.json $(SOURCES) tpl/vagrantfile-osx1011-desktop.tpl dmg/$(MAC_OSX_10_11_EL_CAPITAN_BOOT_DMG)
+	rm -rf $(PARALLELS_OUTPUT)
+	mkdir -p $(PARALLELS_BOX_DIR)
+	$(PACKER) build -only=$(PARALLELS_BUILDER) $(PACKER_VARS) -var "iso_url=dmg/$(MAC_OSX_10_11_EL_CAPITAN_BOOT_DMG)" $<
 
 $(PARALLELS_BOX_DIR)/osx1010$(BOX_SUFFIX): osx1010.json $(SOURCES) dmg/$(MAC_OSX_10_10_YOSEMITE_BOOT_DMG)
 	rm -rf $(PARALLELS_OUTPUT)
@@ -275,7 +300,7 @@ $(PARLLELS_BOX_DIR)/osx107-desktop$(BOX_SUFFIX): osx107-desktop.json $(SOURCES) 
 
 list:
 	@echo "Prepend 'vmware/', 'virtualbox/', or 'parallels/' to build a particular target:"
-	@echo "  make vmware/osx1010"
+	@echo "  make vmware/osx1011"
 	@echo ""
 	@echo "Targets;"
 	@for shortcut_target in $(SHORTCUT_TARGETS) ; do \
