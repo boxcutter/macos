@@ -29,7 +29,7 @@ Parallels requires that the
 [Parallels Virtualization SDK for Mac](http://www.parallels.com/downloads/desktop)
 be installed as an additional preqrequisite.
 
-You will also need copies on the install media for Mac OS X, either the
+You will also need copies on the install media for Mac OS X. Either the
 `Install OS X.app` downloaded from the App Store or the `InstallESD.dmg`
 extracted from the for the version(s) of Mac OS X you want to install.
 
