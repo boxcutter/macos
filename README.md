@@ -30,17 +30,26 @@ Parallels requires that the
 be installed as an additional preqrequisite.
 
 You will also need copies on the install media for Mac OS X, either the
-`Install OS X.app` or `InstallESD.dmg` file for the version(s) of Mac
-OS X you want to install.
+`Install OS X.app` downloaded from the App Store or the `InstallESD.dmg`
+extracted from the for the version(s) of Mac OS X you want to install.
+
+You can find the `InstallESD.dmg` file at the following location within
+the install media package: `Contents/SharedSupport/InstallESD.dmg`
 
 By default, the install media files are expected to be in the following
 relative path locations (but can be overridden as they are Makefile variables):
 
-    10.7 Lion:          iso/OS\ X\ Lion/Install\ OS\ X\ Lion.app
-    10.8 Mountain Lion: iso/OS\ X\ Mountain\ Lion/Install\ OS\ X\ Mountain\ lion.app
-    10.9 Mavericks:     iso/OS\ X\ Mavericks/Install\ OS\ X\ Mavericks.app
-    10.10 Yosemite:     iso/Install\ OS\ X\ Yosemite.app
-    10.11 El Capitan:   iso/Install\ OS\ X\ El\ Capitan.app
+| Mac OS X Release   | Makefile variable                      | Default Value |
+| ------------------ | ---------------------------------------| --------------|
+| 10.11 El Capitan   | `MAC_OSX_10_11_EL_CAPITAN_INSTALLER`   | `iso/Install\ OS\ X\ El\ Capitan.app` |
+| 10.10 Yosemite     | `MAC_OSX_10_10_YOSEMITE_INSTALLER`     | `iso/Install\ OS\ X\ Yosemite.app` |
+| 10.9 Mavericks     | `MAC_OSX_10_9_MAVERICKS_INSTALLER`     | `iso/OS\ X\ Mavericks/Install\ OS\ X\ Mavericks.app` |
+| 10.8 Mountain Lion | `MAC_OSX_10_8_MOUNTAIN_LION_INSTALLER` | `iso/OS\ X\ Mountain\ Lion/Install\ OS\ X\ Mountain\ lion.app` |
+| 10.7 Lion          | `MAC_OSX_10_7_LION_INSTALLER`          | `iso/OS\ X\ Lion/Install\ OS\ X\ Lion.app` |
+
+You can also override these setting, such as with:
+`MAC_OSX_10_11_EL_CAPITAN_INSTALLER := file:///Volumes/macosx/Install\ OS\ X\ El\ Capitan.app`
+`MAC_OSX_10_10_YOSEMITE_INSTALLER := file:///Volumes/macosx/yosemite/InstallESD.dmg`
 
 A GNU Make `Makefile` drives the process via the following targets:
 
@@ -95,16 +104,6 @@ such as `CM_VERSION := 11.12.4`
 
 Another use for `Makefile.local` is to override the default locations
 for the Mac OS X installer files.
-
-For Mac OS X, the installer path variables are:
-
-* `MAC_OSX_10_7_LION_INSTALLER`
-* `MAC_OSX_10_8_MOUNTAIN_LION_INSTALLER`
-* `MAC_OSX_10_9_MAVERICKS_INSTALLER`
-* `MAC_OSX_10_10_YOSEMITE_INSTALLER`
-
-You can also override these setting, such as with
-`MAC_OSX_10_9_MAVERICKS_INSTALLER := file:///Volumes/macosx/OS\ X\ Mavericks/Install\ OS\ X\ Mavericks.app`
 
 ## Contributing
 
