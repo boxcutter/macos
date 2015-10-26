@@ -21,8 +21,3 @@ fi
 # Create a group and assign the user to it
 dseditgroup -o create "$SSH_USERNAME"
 dseditgroup -o edit -a "$SSH_USERNAME" "$SSH_USERNAME"
-
-if [ "$OSX_VERS" = "11" ]; then
-	nvram boot-args=rootless=0
-	reboot
-fi
