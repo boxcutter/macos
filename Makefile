@@ -9,11 +9,11 @@ MAC_OSX_10_9_MAVERICKS_INSTALLER ?= iso/OS\ X\ Mavericks/Install\ OS\ X\ Maveric
 MAC_OSX_10_10_YOSEMITE_INSTALLER ?= iso/Install\ OS\ X\ Yosemite.app
 MAC_OSX_10_11_EL_CAPITAN_INSTALLER ?= iso/Install\ OS\ X\ El\ Capitan.app
 
-MAC_OSX_10_7_LION_BOOT_DMG ?= OSX_InstallESD_10.7.5_11G63.dmg
-MAC_OSX_10_8_MOUNTAIN_LION_BOOT_DMG ?= OSX_InstallESD_10.8.5_12F45.dmg
-MAC_OSX_10_9_MAVERICKS_BOOT_DMG ?= OSX_InstallESD_10.9_13A603.dmg
-MAC_OSX_10_10_YOSEMITE_BOOT_DMG ?= OSX_InstallESD_10.10.5_14F27.dmg
-MAC_OSX_10_11_EL_CAPITAN_BOOT_DMG ?= OSX_InstallESD_10.11_15A284.dmg
+MAC_OSX_10_7_LION_BOOT_DMG ?= $(notdir $(firstword $(wildcard dmg/OSX_InstallESD_10.7*) ))
+MAC_OSX_10_8_MOUNTAIN_LION_BOOT_DMG ?= $(notdir $(firstword $(wildcard dmg/OSX_InstallESD_10.8*) ))
+MAC_OSX_10_9_MAVERICKS_BOOT_DMG ?= $(notdir $(firstword $(wildcard dmg/OSX_InstallESD_10.9*) ))
+MAC_OSX_10_10_YOSEMITE_BOOT_DMG ?= $(notdir $(firstword $(wildcard dmg/OSX_InstallESD_10.10*) ))
+MAC_OSX_10_11_EL_CAPITAN_BOOT_DMG ?= $(notdir $(firstword $(wildcard dmg/OSX_InstallESD_10.11*) ))
 
 # Possible values for CM: (nocm | chef | chefdk | salt | puppet)
 CM ?= nocm
