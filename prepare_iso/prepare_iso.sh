@@ -31,8 +31,8 @@
 usage() {
 	cat <<EOF
 Usage:
-$(basename "$0") [-upi] "/path/to/InstallESD.dmg" /path/to/output/directory
-$(basename "$0") [-upi] "/path/to/Install OS X [Name].app" /path/to/output/directory
+$(basename "$0") [-upiD] "/path/to/InstallESD.dmg" /path/to/output/directory
+$(basename "$0") [-upiD] "/path/to/Install OS X [Name].app" /path/to/output/directory
 
 Description:
 Converts an OS X installer to a new image that contains components
@@ -48,6 +48,12 @@ Optional switches:
 
   -i <path to image>
     Sets the path of the avatar image for the root user, defaulting to the vagrant icon.
+
+  -D <flag>
+    Sets the specified flag. Valid flags are:
+      DISABLE_REMOTE_MANAGEMENT
+      DISABLE_SCREEN_SHARING
+      DISABLE_SIP
 
 EOF
 }
@@ -85,7 +91,12 @@ USER="vagrant"
 PASSWORD="vagrant"
 IMAGE_PATH="$SUPPORT_DIR/vagrant.jpg"
 
-while getopts u:p:i: OPT; do
+# Flags
+DISABLE_REMOTE_MANAGEMENT=0
+DISABLE_SCREEN_SHARING=0
+DISABLE_SIP=0
+
+while getopts u:p:i:D: OPT; do
   case "$OPT" in
     u)
       USER="$OPTARG"
@@ -95,6 +106,15 @@ while getopts u:p:i: OPT; do
       ;;
     i)
       IMAGE_PATH="$OPTARG"
+      ;;
+    D)
+      if [ x${!OPTARG} = x0 ]; then
+        eval $OPTARG=1
+      elif [ x${!OPTARG} != x1 ]; then
+        msg_error "Unknown flag: ${OPTARG}"
+        usage
+        exit 1
+      fi
       ;;
     \?)
       usage
@@ -127,8 +147,8 @@ if [ -d "$ESD" ]; then
 fi
 
 VEEWEE_DIR="$(cd "$SCRIPT_DIR/../../../"; pwd)"
-VEEWEE_UID=$(stat -f %u "$VEEWEE_DIR")
-VEEWEE_GID=$(stat -f %g "$VEEWEE_DIR")
+VEEWEE_UID=$(/usr/bin/stat -f %u "$VEEWEE_DIR")
+VEEWEE_GID=$(/usr/bin/stat -f %g "$VEEWEE_DIR")
 DEFINITION_DIR="$(cd "$SCRIPT_DIR/.."; pwd)"
 
 if [ "$2" = "" ]; then
@@ -210,7 +230,12 @@ USER_GUID=$(/usr/libexec/PlistBuddy -c 'Print :generateduid:0' "$SUPPORT_DIR/use
 
 # postinstall script
 mkdir -p "$SUPPORT_DIR/tmp/Scripts"
-cat "$SUPPORT_DIR/pkg-postinstall" | sed -e "s/__USER__PLACEHOLDER__/${USER}/" > "$SUPPORT_DIR/tmp/Scripts/postinstall"
+cat "$SUPPORT_DIR/pkg-postinstall" \
+    | sed -e "s/__USER__PLACEHOLDER__/${USER}/" \
+    | sed -e "s/__DISABLE_REMOTE_MANAGEMENT__/${DISABLE_REMOTE_MANAGEMENT}/" \
+    | sed -e "s/__DISABLE_SCREEN_SHARING__/${DISABLE_SCREEN_SHARING}/" \
+    | sed -e "s/__DISABLE_SIP__/${DISABLE_SIP}/" \
+    > "$SUPPORT_DIR/tmp/Scripts/postinstall"
 chmod a+x "$SUPPORT_DIR/tmp/Scripts/postinstall"
 
 # build it
@@ -236,7 +261,7 @@ msg_status "Creating empty read-write DMG located at $BASE_SYSTEM_DMG_RW.."
 hdiutil create -o "$BASE_SYSTEM_DMG_RW" -size 10g -layout SPUD -fs HFS+J
 hdiutil attach "$BASE_SYSTEM_DMG_RW" -mountpoint "$MNT_BASE_SYSTEM" -nobrowse -owners on
 
-msg_status "Restoring (`asr restore`) the BaseSystem to the read-write DMG.."
+msg_status "Restoring ('asr restore') the BaseSystem to the read-write DMG.."
 # This asr restore was needed as of 10.11 DP7 and up. See
 # https://github.com/timsutton/osx-vm-templates/issues/40
 #
