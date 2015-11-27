@@ -29,6 +29,8 @@ This project currently only supplies a single Packer template (`template.json`),
 
 OS X's installer cannot be bootstrapped as easily as can Linux or Windows, and so exists the [prepare_iso.sh](https://github.com/timsutton/osx-vm-templates/blob/master/prepare_iso/prepare_iso.sh) script to perform modifications to it that will allow for an automated install and ultimately allow Packer and later, Vagrant, to have SSH access.
 
+**Note:** VirtualBox users currently have to disable Remote Management to avoid [periodic freezing](https://github.com/timsutton/osx-vm-templates/issues/43) of the VM by adding `-D DISABLE_REMOTE_MANAGEMENT` to the `prepare_iso.sh` options. See [Remote Management freezing issue](#remote-management-freezing-issue) for more information.
+
 Run the `prepare_iso.sh` script with two arguments: the path to an `Install OS X.app` or the `InstallESD.dmg` contained within, and an output directory. Root privileges are required in order to write a new DMG with the correct file ownerships. For example, with a 10.8.4 Mountain Lion installer:
 
 `sudo prepare_iso/prepare_iso.sh "/Applications/Install OS X Mountain Lion.app" out`
@@ -40,7 +42,7 @@ Run the `prepare_iso.sh` script with two arguments: the path to an `Install OS X
 -- Done. Built image is located at out/OSX_InstallESD_10.8.4_12E55.dmg. Add this iso and its checksum to your template.
 ```
 
-`prepare_iso.sh` also accepts three command line switches to modify the details of the admin user installed by the script.
+`prepare_iso.sh` accepts command line switches to modify the details of the admin user installed by the script.
 
 * `-u` modifies the name of the admin account, defaulting to `vagrant`
 * `-p` modifies the password of the same account, defaulting to `vagrant`
@@ -49,6 +51,11 @@ Run the `prepare_iso.sh` script with two arguments: the path to an `Install OS X
 For example:
 
 `sudo prepare_iso/prepare_iso.sh -u admin -p password -i /path/to/image.jpg "/Applications/Install OS X Mountain Lion.app" out`
+
+Additionally, flags can be set to disable certain default configuration options.
+
+* `-D DISABLE_REMOTE_MANAGEMENT` disables the Remote Management service.
+* `-D DISABLE_SCREEN_SHARING` disables the Screen Sharing service.
 
 #### Clone this repository
 
@@ -118,6 +125,24 @@ VirtualBox support is thanks entirely to contributions by [Matt Behrens (@zigg)]
 
 ### Caveats
 
+#### Remote Management freezing issue
+
+The default `prepare_iso.sh` configuration enables Remote Management during installation, which causes the resulting virtual machine to [periodically freeze](https://github.com/timsutton/osx-vm-templates/issues/43). You can avoid enabling Remote Management when using `prepare_iso.sh` by passing `-D DISABLE_REMOTE_MANAGEMENT` this:
+
+```
+sudo ./prepare_iso/prepare_iso.sh -D DISABLE_REMOTE_MANAGEMENT "/Applications/Install OS X El Capitan.app" out
+```
+
+#### Extension Pack
+
+The VirtualBox Extension Pack, available from the [Download VirtualBox](https://www.virtualbox.org/wiki/Downloads) page or as the [Homebrew cask](http://caskroom.io/) [virtualbox-extension-pack](https://github.com/caskroom/homebrew-cask/blob/master/Casks/virtualbox-extension-pack.rb), is now required by default because we enable EHCI (USB 2.0) support like the default VirtualBox OS X template does.
+
+If you cannot use the Extension Pack, you can remove the line that enables EHCI support from [`packer/template.json`](https://github.com/timsutton/osx-vm-templates/blob/master/packer/template.json):
+
+```
+        ["modifyvm", "{{.Name}}", "--usbehci", "on"],
+```
+
 #### Shared folders
 
 Oracle's support for OS X in VirtualBox is very limited, including the lack of guest tools to provide a shared folder mechanism. If using the VirtualBox provider in Vagrant, you will need to configure the shared folder that's set up by default (current folder mapped to `/vagrant`) to use either the `rsync` or `nfs` synced folder mechanisms. You can do this like any other synced folder config in your Vagrantfile:
@@ -128,16 +153,6 @@ Vagrant.configure("2") do |config|
     config.vm.synced_folder ".", "/vagrant", type: "rsync"
   end
 end
-```
-
-#### Additional VM configuration for Packer
-
-So far we've seen that the `--cpuidset` option needs to be passed to `modifyvm` as a line in the packer template if a Haswell Intel Mac is used to build the VM, at least as of VirtualBox 4.3.12. It seems to cause a VM crash on at least one older Mac, a Core 2 Duo-based 2010 Mac Mini, though did not cause issues on an Ivy Bridge 2013 iMac I tested. If it's missing on a Haswell Mac, however, the VM hangs indefinitely. This behaviour is likely to change over time as Oracle keeps up with support for OS X guests.
-
-```json
-      "vboxmanage": [
-        ["modifyvm", "{{.Name}}", "--cpuidset", "00000001", "000306a9", "00020800", "80000201", "178bfbff"],
-      ]
 ```
 
 
