@@ -1,0 +1,156 @@
+{
+  "_command": "Build with `packer build osx.json`",
+  "builders": [
+    {
+      "boot_wait": "2s",
+      "disk_size": "{{ user `disk_size` }}",
+      "guest_os_type": "{{ user `vmware_guest_os_type` }}",
+      "iso_checksum_type": "none",
+      "iso_url": "{{ user `iso_url` }}",
+      "output_directory": "output-{{ user `vm_name` }}-vmware-iso",
+      "shutdown_command": "echo '{{ user `ssh_username` }}'|sudo -S shutdown -h now",
+      "skip_compaction": true,
+      "ssh_password": "{{ user `ssh_password` }}",
+      "ssh_port": 22,
+      "ssh_username": "{{ user `ssh_username` }}",
+      "ssh_wait_timeout": "10000s",
+      "tools_upload_flavor": "darwin",
+      "type": "vmware-iso",
+      "vm_name": "{{ user `vm_name` }}",
+      "vmx_data": {
+        "cpuid.coresPerSocket": "1",
+        "ehci.present": "TRUE",
+        "firmware": "efi",
+        "hpet0.present": "TRUE",
+        "ich7m.present": "TRUE",
+        "keyboardAndMouseProfile": "macProfile",
+        "memsize": "{{ user `memory` }}",
+        "numvcpus": "{{ user `cpus` }}",
+        "smc.present": "TRUE",
+        "usb.present": "TRUE"
+      }
+    },
+    {
+      "boot_wait": "2s",
+      "disk_size": "{{ user `disk_size` }}",
+      "guest_additions_mode": "disable",
+      "guest_os_type": "{{ user `virtualbox_guest_os_type` }}",
+      "hard_drive_interface": "sata",
+      "iso_checksum_type": "none",
+      "iso_interface": "sata",
+      "iso_url": "{{ user `iso_url` }}",
+      "output_directory": "output-{{ user `vm_name` }}-virtualbox-iso",
+      "shutdown_command": "echo '{{ user `ssh_username` }}'|sudo -S shutdown -h now",
+      "ssh_password": "{{ user `ssh_password` }}",
+      "ssh_port": 22,
+      "ssh_username": "{{ user `ssh_username` }}",
+      "ssh_wait_timeout": "10000s",
+      "type": "virtualbox-iso",
+      "vboxmanage": [
+        [ "modifyvm", "{{.Name}}", "--audiocontroller", "hda" ],
+        [ "modifyvm", "{{.Name}}", "--boot1", "dvd" ],
+        [ "modifyvm", "{{.Name}}", "--boot2", "disk" ],
+        [ "modifyvm", "{{.Name}}", "--chipset", "ich9" ],
+        [ "modifyvm", "{{.Name}}", "--firmware", "efi" ],
+        [ "modifyvm", "{{.Name}}", "--hpet", "on" ],
+        [ "modifyvm", "{{.Name}}", "--keyboard", "usb" ],
+        [ "modifyvm", "{{.Name}}", "--memory", "{{ user `memory` }}" ],
+        [ "modifyvm", "{{.Name}}", "--mouse", "usbtablet" ],
+        [ "modifyvm", "{{.Name}}", "--usbehci", "on"],
+        [ "modifyvm", "{{.Name}}", "--vram", "16" ],
+        [ "storagectl", "{{.Name}}", "--name", "IDE Controller", "--remove" ]
+      ],
+      "vm_name": "{{ user `vm_name` }}"
+    },
+    {
+      "boot_wait": "5s",
+      "disk_size": "{{ user `disk_size` }}",
+      "guest_os_type": "{{ user `parallels_guest_os_type` }}",
+      "iso_checksum_type": "none",
+      "iso_url": "{{ user `iso_url` }}",
+      "output_directory": "output-{{ user `vm_name` }}-parallels-iso",
+      "parallels_tools_flavor": "mac",
+      "prlctl": [
+        [ "set", "{{.Name}}", "--memsize", "{{ user `memory` }}" ],
+        [ "set", "{{.Name}}", "--memquota", "512:{{ user `memory` }}" ],
+        [ "set", "{{.Name}}", "--cpus", "{{ user `cpus` }}" ],
+        [ "set", "{{.Name}}", "--distribution", "macosx" ],
+        [ "set", "{{.Name}}", "--3d-accelerate", "highest" ],
+        [ "set", "{{.Name}}", "--high-resolution", "off" ],
+        [ "set", "{{.Name}}", "--auto-share-camera", "off" ],
+        [ "set", "{{.Name}}", "--auto-share-bluetooth", "off" ],
+        [ "set", "{{.Name}}", "--on-window-close", "keep-running" ],
+        [ "set", "{{.Name}}", "--isolate-vm", "on" ],
+        [ "set", "{{.Name}}", "--shf-host", "off" ]
+      ],
+      "shutdown_command": "echo '{{ user `ssh_username` }}'|sudo -S shutdown -h now",
+      "ssh_password": "{{ user `ssh_password` }}",
+      "ssh_port": 22,
+      "ssh_username": "{{ user `ssh_username` }}",
+      "ssh_wait_timeout": "10000s",
+      "type": "parallels-iso",
+      "vm_name": "{{ user `vm_name` }}"
+    }
+  ],
+  "post-processors": [
+    {
+      "keep_input_artifact": false,
+      "output": "box/{{.Provider}}/{{user `vm_name`}}-{{user `cm`}}{{user `cm_version`}}-{{user `version`}}.box",
+      "type": "vagrant",
+      "vagrantfile_template": "{{ user `vagrantfile_template` }}"
+    }
+  ],
+  "provisioners": [
+    {
+      "destination": "/private/tmp/set_kcpassword.py",
+      "source": "script/support/set_kcpassword.py",
+      "type": "file"
+    },
+    {
+      "environment_vars": [
+        "AUTOLOGIN={{user `autologin`}}",
+        "CM={{user `cm`}}",
+        "CM_VERSION={{user `cm_version`}}",
+        "UPDATE={{user `update`}}",
+        "INSTALL_XCODE_CLI_TOOLS={{user `install_xcode_cli_tools`}}",
+        "INSTALL_VAGRANT_KEYS={{user `install_vagrant_keys`}}",
+        "SSH_USERNAME={{ user `ssh_username` }}",
+        "SSH_PASSWORD={{ user `ssh_password` }}"
+      ],
+      "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E -S bash '{{ .Path }}'",
+      "scripts": [
+        "script/vagrant.sh",
+        "script/vmware.sh",
+        "script/parallels.sh",
+        "script/xcode-cli-tools.sh",
+        "script/cmtool.sh",
+        "script/add-network-interface-detection.sh",
+        "script/autologin.sh",
+        "script/update.sh",
+        "script/minimize.sh"
+      ],
+      "type": "shell"
+    }
+  ],
+  "variables": {
+    "autologin": "true",
+    "cm": "nocm",
+    "cm_version": "",
+    "cpus": "1",
+    "disk_size": "65536",
+    "install_vagrant_keys": "true",
+    "install_xcode_cli_tools": "true",
+    "iso_url": "dmg/OSX_InstallESD_10.11_15A284.dmg",
+    "memory": "2048",
+    "parallels_guest_os_type": "win-8",
+    "ssh_password": "vagrant",
+    "ssh_username": "vagrant",
+    "update": "true",
+    "vagrantfile_template": "",
+    "version": "0.1.0",
+    "vm_name": "osx1011",
+    "virtualbox_guest_os_type": "MacOS1011_64",
+    "vmware_guest_os_type": "darwin15-64"
+  }
+}
+
