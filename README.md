@@ -34,10 +34,8 @@ for the version(s) of Mac OS X you want to install.
 You might want to extract an `InstallESD.dmg` file from the `Install OS X.app` from
 the Mac OS X App Store if you store your installation media on a non-Mac OS X filesystem
 that does not understand the Mac OS X `.app` package format.  You can find the
-`InstallESD.dmg` file at the following location within the install media package: `Contents/SharedSupport/InstallESD.dmg`
-
-Otherwise, just stick with the original `Install OS X.app` file that you downloaded from
-the Mac OS X App Store.
+`InstallESD.dmg` file at the following location within the install media package: `Contents/SharedSupport/InstallESD.dmg`.  Otherwise, just stick with the original
+`Install OS X.app` file that you downloaded from the Mac OS X App Store.
 
 Once you have a `Install OS X.app` or `InstallESD.dmg` file for the version of Mac OS X
 you want to install, use the `prepare_iso.sh` script to create a custom install
@@ -48,7 +46,28 @@ custom install image from the `Install OS X.app` for Mac OS X El Capitan:
 
 Or if you extracted an `InstallESD.dmg` the command line is similar:
 
-    sudo prepare_iso/prepare_iso.sh <path_to_dmg>/InstallESD.dmg dmg
+    sudo prepare_iso/prepare_iso.sh <path_to_installesd>/InstallESD.dmg dmg
+    
+The `prepare_iso.sh` script will prompt you for an administrator password.  Enter in
+the correct password, the script will automatically create a custom install image
+for you.  The script will take a few minutes to grind through the image creation process.
+Once the script is complete, it will print out a checksum and a relative path for
+the image location.  For example, this was the output from `prepare_iso.sh` for my
+El Capitan image:
+
+    ...
+    -- Checksumming output image..
+    -- MD5: 78abb8d18c4d8fc4436cac5394f58365
+    -- Done. Built image is located at dmg/OSX_InstallESD_10.11_15A284.dmg. Add this iso and its checksum to your template.
+
+## Customizing the var_list file
+
+We make use of JSON files containing user variables to build specific versions of Ubuntu.
+You tell `packer` to use a specific user variable file via the `-var-file=` command line
+option.  This will override the default options on the core `osx.json` packer template.
+
+Find the var_list file for the version of Mac OS X you want to install, and change the
+`iso_url` variable to match the image file name produced by `prepare_iso.sh`.
 
 ## Building the Vagrant boxes with Packer
 
@@ -60,65 +79,27 @@ Parallels requires that the
 [Parallels Virtualization SDK for Mac](http://www.parallels.com/downloads/desktop)
 be installed as an additional preqrequisite.
 
-
 We make use of JSON files containing user variables to build specific versions of Ubuntu.
 You tell `packer` to use a specific user variable file via the `-var-file=` command line
-option.  This will override the default options on the core `ubuntu.json` packer template,
-which builds Ubuntu 14.04 by default.
+option.  This will override the default options on the core `osx.json` packer template,
+which builds Mac OS X El Capitan by default.
 
-For example, to build Ubuntu 15.04, use the following:
+For example, to build Mac OS X El Capitan, use the following:
 
-    $ packer build -var-file=ubuntu1504.json ubuntu.json
+    $ packer build -var-file=osx1011.json osx.json
     
 If you want to make boxes for a specific desktop virtualization platform, use the `-only`
-parameter.  For example, to build Ubuntu 15.04 for VirtualBox:
+parameter.  For example, to build Mac OS X El Capitan for VMware Fusion:
 
-    $ packer build -only=virtualbox-iso -var-file=ubuntu1504.json ubuntu.json
+    $ packer build -only=vmware-iso -var-file=osx1011.json osx.json
 
 The boxcutter templates currently support the following desktop virtualization strings:
 
 * `parallels-iso` - [Parallels](http://www.parallels.com/products/desktop/whats-new/) desktop virtualization (Requires the Pro Edition - Desktop edition won't work)
 * `virtualbox-iso` - [VirtualBox](https://www.virtualbox.org/wiki/Downloads) desktop virtualization
 * `vmware-iso` - [VMware Fusion](https://www.vmware.com/products/fusion) or [VMware Workstation](https://www.vmware.com/products/workstation) desktop virtualization
-* 
-## Building the Vagrant boxes
 
-To build all the boxes, you will need VirtualBox, VMware Fusion and 
-Parallels Desktop for Mac installed.
 
-Parallels requires that the
-[Parallels Virtualization SDK for Mac](http://www.parallels.com/downloads/desktop)
-be installed as an additional preqrequisite.
-
-You will also need copies on the install media for Mac OS X. Either the
-`Install OS X.app` downloaded from the App Store or the `InstallESD.dmg`
-extracted from the for the version(s) of Mac OS X you want to install.
-
-You can find the `InstallESD.dmg` file at the following location within
-the install media package: `Contents/SharedSupport/InstallESD.dmg`
-
-By default, the install media files are expected to be in the following
-relative path locations (but can be overridden as they are Makefile variables):
-
-| Mac OS X Release   | Makefile variable                      | Default Value |
-| ------------------ | ---------------------------------------| --------------|
-| 10.11 El Capitan   | `MAC_OSX_10_11_EL_CAPITAN_INSTALLER`   | `iso/Install\ OS\ X\ El\ Capitan.app` |
-| 10.10 Yosemite     | `MAC_OSX_10_10_YOSEMITE_INSTALLER`     | `iso/Install\ OS\ X\ Yosemite.app` |
-| 10.9 Mavericks     | `MAC_OSX_10_9_MAVERICKS_INSTALLER`     | `iso/OS\ X\ Mavericks/Install\ OS\ X\ Mavericks.app` |
-| 10.8 Mountain Lion | `MAC_OSX_10_8_MOUNTAIN_LION_INSTALLER` | `iso/OS\ X\ Mountain\ Lion/Install\ OS\ X\ Mountain\ lion.app` |
-| 10.7 Lion          | `MAC_OSX_10_7_LION_INSTALLER`          | `iso/OS\ X\ Lion/Install\ OS\ X\ Lion.app` |
-
-You can also override these setting, such as with:
-`MAC_OSX_10_11_EL_CAPITAN_INSTALLER := file:///Volumes/macosx/Install\ OS\ X\ El\ Capitan.app`
-`MAC_OSX_10_10_YOSEMITE_INSTALLER := file:///Volumes/macosx/yosemite/InstallESD.dmg`
-
-A GNU Make `Makefile` drives the process via the following targets:
-
-    make        # Build all the box types (VMware & VirtualBox)
-    make test   # Run tests against all the boxes
-    make list   # Print out individual targets
-    make clean  # Clean up build detritus
-    
 ### Tests
 
 The tests are written in [Serverspec](http://serverspec.org) and require the
