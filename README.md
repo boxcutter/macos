@@ -99,6 +99,44 @@ The boxcutter templates currently support the following desktop virtualization s
 * `virtualbox-iso` - [VirtualBox](https://www.virtualbox.org/wiki/Downloads) desktop virtualization
 * `vmware-iso` - [VMware Fusion](https://www.vmware.com/products/fusion) or [VMware Workstation](https://www.vmware.com/products/workstation) desktop virtualization
 
+## Building the Vagrant boxes with the box script
+
+We've also provided a wrapper script `bin/box` for ease of use, so alternatively, you can use
+the following to build Mac OS X El Capitan for all providers:
+
+    $ bin/box build osx1011
+
+Or if you just want to build Mac OS X El Capitan for VMware Fusion:
+
+    $ bin/box build osx1011 vmware
+
+## Building the Vagrant boxes with the Makefile
+
+A GNU Make `Makefile` drives a complete basebox creation pipeline with the following stages:
+
+* `build` - Create basebox `*.box` files
+* `assure` - Verify that the basebox `*.box` files produced function correctly
+* `deliver` - Upload `*.box` files to [Artifactory](https://www.jfrog.com/confluence/display/RTF/Vagrant+Repositories), [Atlas](https://atlas.hashicorp.com/) or an [S3 bucket](https://aws.amazon.com/s3/)
+
+The pipeline is driven via the following targets, making it easy for you to include them
+in your favourite CI tool:
+
+    make build   # Build all available box types
+    make assure  # Run tests against all the boxes
+    make deliver # Upload box artifacts to a repository
+    make clean   # Clean up build detritus
+
+### Proxy Settings
+
+The templates respect the following network proxy environment variables
+and forward them on to the virtual machine environment during the box creation
+process, should you be using a proxy:
+
+* http_proxy
+* https_proxy
+* ftp_proxy
+* rsync_proxy
+* no_proxy
 
 ### Tests
 
@@ -106,19 +144,18 @@ The tests are written in [Serverspec](http://serverspec.org) and require the
 `vagrant-serverspec` plugin to be installed with:
 
     vagrant plugin install vagrant-serverspec
-    
-The `Makefile` has individual targets for each box type with the prefix
-`test-*` should you wish to run tests individually for each box.
 
-Similarly there are targets with the prefix `ssh-*` for registering a
-newly-built box with vagrant and for logging in using just one command to
-do exploratory testing.  For example, to do exploratory testing
-on the VirtualBox training environmnet, run the following command:
+The `test-box` script will configure vagrant to run all the box tests.
 
+    bin/box test osx1011 vmware
+
+Similarly the `ssh-box` script will register a newly-built box with vagrant
+and permit you to login to  perform exploratory testing.  For example, to do
+exploratory testing on the VMware version of the box, run the following command:
+
+    bin/box ssh osx1011 vmware
     make ssh-box/virtualbox/osx109-nocm.box
     
-Upon logout `make ssh-*` will automatically de-register the box as well.
-
 ### Makefile.local override
 
 You can create a `Makefile.local` file alongside the `Makefile` to override
