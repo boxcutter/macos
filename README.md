@@ -2,7 +2,7 @@
 
 ### Overview
 
-This repository contains Packer templates for creating Mac OS X Vagrant boxes.
+This repository contains [Packer](https://packer.io/) templates for creating Mac OS X Vagrant boxes.
 
 You must supply your own install media and build these boxes on your own using these templates.
 No pre-built boxes are publicly available.
@@ -116,3 +116,17 @@ for the Mac OS X installer files.
 7. If you have a large change in mind, it is still preferred that you split them into small commits.  Good commit messages are important.  The git documentatproject has some nice guidelines on [writing descriptive commit messages](http://git-scm.com/book/ch5-2.html#Commit-Guidelines).
 8. Push to your fork and submit a pull request.
 9. Once submitted, a full `make test` run will be performed against your change in the build farm.  You will be notified if the test suite fails.
+
+### Acknowledgments
+
+These templates are based on [Timothy Sutton's Mac OS X templates](https://github.com/timsutton/osx-vm-templates).
+We thank Timothy for making these templates available and keeping them updated.
+
+[Parallels](http://www.parallels.com/) provides a Business Edition license of
+their software to run on the basebox build farm.
+
+<img src="http://www.parallels.com/fileadmin/images/corporate/brand-assets/images/logo-knockout-on-red.jpg" width="80">
+
+[SmartyStreets](http://www.smartystreets.com) is providing basebox hosting for the box-cutter project.
+
+![Powered By SmartyStreets](https://smartystreets.com/resources/images/smartystreets-flat.png)
