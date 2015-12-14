@@ -32,7 +32,7 @@ Vagrant.configure("2") do |config|
       v.customize ["modifyvm", :id, "--keyboard", "usb"]
       v.customize ["modifyvm", :id, "--memory", "2048"]
       v.customize ["modifyvm", :id, "--mouse", "usbtablet"]
-      v.customize ["modifyvm", :id, "--vram", "16"]
+      v.customize ["modifyvm", :id, "--vram", "128"]
     end
 
     config.vm.provider :parallels do |v, override|

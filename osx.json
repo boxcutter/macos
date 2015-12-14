@@ -56,7 +56,7 @@
         [ "modifyvm", "{{.Name}}", "--keyboard", "usb" ],
         [ "modifyvm", "{{.Name}}", "--memory", "{{ user `memory` }}" ],
         [ "modifyvm", "{{.Name}}", "--mouse", "usbtablet" ],
-        [ "modifyvm", "{{.Name}}", "--vram", "16" ]
+        [ "modifyvm", "{{.Name}}", "--vram", "128" ]
       ],
       "vm_name": "{{ user `vm_name` }}"
     },
