@@ -1,15 +1,20 @@
 #!/bin/bash -eux
 
-echo "==> Turning off hibernation"
+OSX_VERS=$(sw_vers -productVersion | awk -F "." '{print $2}')
+
+echo "==> Turn off hibernation"
 pmset hibernatemode 0
 
-echo "==> Getting rid of the sleepimage"
+echo "==> Get rid of the sleepimage"
 rm -f /var/vm/sleepimage
 
-echo "==> Stopping the page process and dropping swap files"
+echo "==> Stop the page process and dropping swap files"
 # These will be re-created on boot
-launchctl unload /System/Library/LaunchDaemons/com.apple.dynamic_pager.plist
-sleep 5
+# Starting with El Cap we can only stop the dynamic pager if SIP is disabled.
+if [ "$OSX_VERS" -lt 11 ] || $(csrutil status | grep -q disabled); then
+    launchctl unload /System/Library/LaunchDaemons/com.apple.dynamic_pager.plist
+    sleep 5
+fi
 rm -rf /private/var/vm/swap*
 
 slash="$(df -h / | tail -n 1 | awk '{print $1}')"
@@ -19,5 +24,5 @@ diskutil secureErase freespace 0 ${slash}
 # VMware Fusion specific items
 if [ -e .vmfusion_version ] || [[ "$PACKER_BUILDER_TYPE" == vmware* ]]; then
     # Shrink the disk
-    sudo /Library/Application\ Support/VMware\ Tools/vmware-tools-cli disk shrink /
+    /Library/Application\ Support/VMware\ Tools/vmware-tools-cli disk shrink /
 fi
