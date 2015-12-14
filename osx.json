@@ -56,9 +56,7 @@
         [ "modifyvm", "{{.Name}}", "--keyboard", "usb" ],
         [ "modifyvm", "{{.Name}}", "--memory", "{{ user `memory` }}" ],
         [ "modifyvm", "{{.Name}}", "--mouse", "usbtablet" ],
-        [ "modifyvm", "{{.Name}}", "--usbehci", "on"],
-        [ "modifyvm", "{{.Name}}", "--vram", "16" ],
-        [ "storagectl", "{{.Name}}", "--name", "IDE Controller", "--remove" ]
+        [ "modifyvm", "{{.Name}}", "--vram", "16" ]
       ],
       "vm_name": "{{ user `vm_name` }}"
     },

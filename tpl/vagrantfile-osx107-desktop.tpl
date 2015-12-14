@@ -11,7 +11,6 @@ Vagrant.configure("2") do |config|
       v.customize ["modifyvm", :id, "--boot1", "dvd"]
       v.customize ["modifyvm", :id, "--boot2", "disk"]
       v.customize ["modifyvm", :id, "--chipset", "ich9"]
-      v.customize ["modifyvm", :id, "--cpuidset", "00000001", "000006fb", "00000800", "80000209", "078bfbff"]
       v.customize ["modifyvm", :id, "--firmware", "efi"]
       v.customize ["modifyvm", :id, "--hpet", "on"]
       v.customize ["modifyvm", :id, "--keyboard", "usb"]

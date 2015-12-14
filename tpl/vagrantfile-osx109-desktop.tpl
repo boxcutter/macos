@@ -16,9 +16,7 @@ Vagrant.configure("2") do |config|
       v.customize ["modifyvm", :id, "--keyboard", "usb"]
       v.customize ["modifyvm", :id, "--memory", "2048"]
       v.customize ["modifyvm", :id, "--mouse", "usbtablet"]
-      v.customize ["modifyvm", :id, "--usbehci", "on"]
       v.customize ["modifyvm", :id, "--vram", "16"]
-      v.customize ["modifyvm", :id, "--name", "IDE Controller", "--remove"]
     end
 
     ["vmware_fusion", "vmware_workstation"].each do |provider| 
