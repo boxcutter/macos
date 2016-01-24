@@ -5,7 +5,7 @@
   "cpus": "1",
   "disk_size": "64000",
   "iso_url": "dmg/OSX_InstallESD_10.11_15A284.dmg",
-  "memory": "2048",
+  "memory": "4096",
   "parallels_guest_os_type": "win-8",
   "vagrantfile_template": "",
   "virtualbox_guest_os_type": "MacOS1011_64",
