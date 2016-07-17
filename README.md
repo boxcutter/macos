@@ -1,8 +1,8 @@
-# Packer templates for Mac OS X
+# Packer templates for macOS
 
 ### Overview
 
-This repository contains [Packer](https://packer.io/) templates for creating Mac OS X Vagrant boxes.
+This repository contains [Packer](https://packer.io/) templates for creating macOS Vagrant boxes.
 
 You must supply your own install media and build these boxes on your own using these templates.
 No pre-built boxes are publicly available.
@@ -20,24 +20,24 @@ No pre-built boxes are publicly available.
 * osx108-desktop - Mountain Lion desktop, VMware 7.4GB
 * osx107-desktop - Lion desktop, VMware 8.5GB
 
-## Creating Mac OS X install images with the prepare_iso.sh script
+## Creating macOS install images with the prepare_iso.sh script
 
-First you will need to create custom install images of Mac OS X in order
-to automate the installation.  These images are made from official Mac OS X
+First you will need to create custom install images of macOS in order
+to automate the installation.  These images are made from official macOS
 install media and customized so that they do not require human input to proceed
-through the Mac OS X install.
+through the macOS install.
 
-Start by downloading local copies of the install media for Mac OS X. Either download
+Start by downloading local copies of the install media for macOS. Either download
 `Install OS X.app` from the App Store or the extract the `InstallESD.dmg`
-for the version(s) of Mac OS X you want to install.
+for the version(s) of macOS you want to install.
 
 You might want to extract an `InstallESD.dmg` file from the `Install OS X.app` from
-the Mac OS X App Store if you store your installation media on a non-Mac OS X filesystem
-that does not understand the Mac OS X `.app` package format.  You can find the
+the App Store if you store your installation media on a non-macOS filesystem
+that does not understand the macOS `.app` package format.  You can find the
 `InstallESD.dmg` file at the following location within the install media package: `Contents/SharedSupport/InstallESD.dmg`.  Otherwise, just stick with the original
-`Install OS X.app` file that you downloaded from the Mac OS X App Store.
+`Install OS X.app` file that you downloaded from the App Store.
 
-Once you have a `Install OS X.app` or `InstallESD.dmg` file for the version of Mac OS X
+Once you have a `Install OS X.app` or `InstallESD.dmg` file for the version of macOS
 you want to install, use the `prepare_iso.sh` script to create a custom install
 image in the `dmg` subdirectory for packer.  For example, run following to create a
 custom install image from the `Install OS X.app` for Mac OS X El Capitan:
@@ -66,7 +66,7 @@ We make use of JSON files containing user variables to build specific versions o
 You tell `packer` to use a specific user variable file via the `-var-file=` command line
 option.  This will override the default options on the core `osx.json` packer template.
 
-Find the var_list file for the version of Mac OS X you want to install, and change the
+Find the var_list file for the version of macOS you want to install, and change the
 `iso_url` variable to match the image file name produced by `prepare_iso.sh`.
 
 ## Building the Vagrant boxes with Packer
