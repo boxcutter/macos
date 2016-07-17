@@ -45,7 +45,7 @@ Vagrant.configure("2") do |config|
       v.customize ["set", :id, "--auto-share-camera", "off"]
       v.customize ["set", :id, "--auto-share-bluetooth", "off"]
       v.customize ["set", :id, "--on-window-close", "keep-running"]
-      v.customize ["set", :id, "--isolate-vm", "on"]
+      v.customize ["set", :id, "--isolate-vm", "off"]
       v.customize ["set", :id, "--shf-host", "off"]
     end
 end
