@@ -2,23 +2,11 @@
 
 ### Overview
 
-This repository contains [Packer](https://packer.io/) templates for creating macOS Vagrant boxes.
+This repository contains [Packer](https://packer.io/) templates for creating
+macOS Vagrant boxes.
 
-You must supply your own install media and build these boxes on your own using these templates.
-No pre-built boxes are publicly available.
-
-## Current Boxes
-
-* osx1011 - El Capitan headless, VMware 7.8GB
-* osx1010 - Yosemite headless, VMware 7.4GB
-* osx109 - Mavericks headless, VMware 8.7GB
-* osx108 - Mountain Lion headless, VMware 7.4GB
-* osx107 - Lion headless, VMware 8.6GB
-* osx1011-desktop - El Capitan desktop, VMware 7.8GB
-* osx1010-desktop - Yosemite desktop, VMware 7.4GB
-* osx109-desktop - Mavericks desktop, VMware 8.1GB
-* osx108-desktop - Mountain Lion desktop, VMware 7.4GB
-* osx107-desktop - Lion desktop, VMware 8.5GB
+You must supply your own install media and build these boxes on your own using
+these templates. No pre-built boxes are publicly available.
 
 ## Creating macOS install images with the prepare_iso.sh script
 
@@ -27,20 +15,23 @@ to automate the installation.  These images are made from official macOS
 install media and customized so that they do not require human input to proceed
 through the macOS install.
 
-Start by downloading local copies of the install media for macOS. Either download
-`Install OS X.app` from the App Store or the extract the `InstallESD.dmg`
-for the version(s) of macOS you want to install.
+Start by downloading local copies of the install media for macOS. Either
+download `Install OS X.app` from the App Store or the extract the
+`InstallESD.dmg` for the version(s) of macOS you want to install.
 
-You might want to extract an `InstallESD.dmg` file from the `Install OS X.app` from
-the App Store if you store your installation media on a non-macOS filesystem
-that does not understand the macOS `.app` package format.  You can find the
-`InstallESD.dmg` file at the following location within the install media package: `Contents/SharedSupport/InstallESD.dmg`.  Otherwise, just stick with the original
-`Install OS X.app` file that you downloaded from the App Store.
+You might want to extract an `InstallESD.dmg` file from the `Install OS X.app`
+from the App Store if you store your installation media on a non-macOS
+filesystem that does not understand the macOS `.app` package format.  You can
+find the `InstallESD.dmg` file at the following location within the install
+media package: `Contents/SharedSupport/InstallESD.dmg`.  Otherwise, just stick
+with the original `Install OS X.app` file that you downloaded from the App
+Store.
 
-Once you have a `Install OS X.app` or `InstallESD.dmg` file for the version of macOS
-you want to install, use the `prepare_iso.sh` script to create a custom install
-image in the `dmg` subdirectory for packer.  For example, run following to create a
-custom install image from the `Install OS X.app` for Mac OS X El Capitan:
+Once you have a `Install OS X.app` or `InstallESD.dmg` file for the version of
+macOS you want to install, use the `prepare_iso.sh` script to create a custom
+install image in the `dmg` subdirectory for packer.  For example, run following
+to create a custom install image from the `Install OS X.app` for Mac OS X El
+Capitan:
 
     sudo prepare_iso/prepare_iso.sh /Applications/Install\ OS\ X\ El\ Capitan.app dmg
 
@@ -48,12 +39,12 @@ Or if you extracted an `InstallESD.dmg` the command line is similar:
 
     sudo prepare_iso/prepare_iso.sh <path_to_installesd>/InstallESD.dmg dmg
     
-The `prepare_iso.sh` script will prompt you for an administrator password.  Enter in
-the correct password, the script will automatically create a custom install image
-for you.  The script will take a few minutes to grind through the image creation process.
-Once the script is complete, it will print out a checksum and a relative path for
-the image location.  For example, this was the output from `prepare_iso.sh` for my
-El Capitan image:
+The `prepare_iso.sh` script will prompt you for an administrator password.
+Enter in the correct password, the script will automatically create a custom
+install image for you.  The script will take a few minutes to grind through
+the image creation process.  Once the script is complete, it will print out a
+checksum and a relative path for the image location.  For example, this was
+the output from `prepare_iso.sh` for my El Capitan image:
 
     ...
     -- Checksumming output image..
@@ -62,12 +53,14 @@ El Capitan image:
 
 ## Customizing the var_list file
 
-We make use of JSON files containing user variables to build specific versions of Ubuntu.
-You tell `packer` to use a specific user variable file via the `-var-file=` command line
-option.  This will override the default options on the core `osx.json` packer template.
+We make use of JSON files containing user variables to build specific versions
+of macOS. You tell `packer` to use a specific user variable file via the
+`-var-file=` command line option.  This will override the default options on
+the core `macos.json` packer template.
 
-Find the var_list file for the version of macOS you want to install, and change the
-`iso_url` variable to match the image file name produced by `prepare_iso.sh`.
+Find the var_list file for the version of macOS you want to install, and
+change the `iso_url` variable to match the image file name produced by
+`prepare_iso.sh`.
 
 ## Building the Vagrant boxes with Packer
 
@@ -79,19 +72,21 @@ Parallels requires that the
 [Parallels Virtualization SDK for Mac](http://www.parallels.com/downloads/desktop)
 be installed as an additional preqrequisite.
 
-We make use of JSON files containing user variables to build specific versions of Ubuntu.
-You tell `packer` to use a specific user variable file via the `-var-file=` command line
-option.  This will override the default options on the core `osx.json` packer template,
-which builds Mac OS X El Capitan by default.
+We make use of JSON files containing user variables to build specific versions
+of macOS.  You tell `packer` to use a specific user variable file via the
+`-var-file=` command line option.  This will override the default options on
+the core `macos.json` packer template, which builds Mac OS X El Capitan by
+default.
 
 For example, to build Mac OS X El Capitan, use the following:
 
-    $ packer build -var-file=osx1011.json osx.json
+    $ packer build -var-file=macos1011.json macos.json
     
-If you want to make boxes for a specific desktop virtualization platform, use the `-only`
-parameter.  For example, to build Mac OS X El Capitan for VMware Fusion:
+If you want to make boxes for a specific desktop virtualization platform, use
+the `-only` parameter.  For example, to build Mac OS X El Capitan for VMware
+Fusion:
 
-    $ packer build -only=vmware-iso -var-file=osx1011.json osx.json
+    $ packer build -only=vmware-iso -var-file=macos1011.json macos.json
 
 The boxcutter templates currently support the following desktop virtualization strings:
 
@@ -101,14 +96,16 @@ The boxcutter templates currently support the following desktop virtualization s
 
 ## Building the Vagrant boxes with the box script
 
-We've also provided a wrapper script `bin/box` for ease of use, so alternatively, you can use
-the following to build Mac OS X El Capitan for all providers:
+We've also provided a wrapper script `bin/box` for ease of use, so
+alternatively, you can use the following to build Mac OS X El Capitan for
+all providers:
 
-    $ bin/box build osx1011
+    $ bin/box build macos1011 /Applications/Install\ OS\ X\ El\ Capitan.app/ 10.11
 
 Or if you just want to build Mac OS X El Capitan for VMware Fusion:
 
-    $ bin/box build osx1011 vmware
+    $ bin/box build osx1011 /Applications/Install\ OS\ X\ El\ Capitan.app/ 10.
+11 vmware
 
 ## Building the Vagrant boxes with the Makefile
 
