@@ -65,7 +65,7 @@ args "$@"
 for f in dmg/*${macos_version}*; do
   if [ ! -f "$f" ]; then
     mkdir -p dmg
-    prepare_iso/prepare_iso.sh "#{macos_installer}" dmg
+    prepare_iso/prepare_iso.sh "${macos_installer}" dmg
   fi
 
   break
