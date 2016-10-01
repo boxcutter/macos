@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+set -o errexit -o nounset -o pipefail
+
+if [ "${DEBUG:=false}" = "true" ]; then
+  set -o xtrace
+fi
+
+usage() {
+  echo "usage: $(basename $0) VAR_LIST_FILE MACOS_INSTALLER MACOS_VERSION [vmware|virtualbox|parallels] [PACKER_TEMPLATE]"
+  echo
+  echo "Example: bin/build-box macos1012 /Applications/Install\ macOS\ Sierra.app 10.12 vmware"
+  echo
+  echo "Build a box"
+}
+
+args() {
+  if [ "$#" -lt 3 ]; then
+    usage
+    exit 0
+  fi
+
+  var_file="$1"
+  if [ ! -f "${var_file}" ]; then
+    var_file="${var_file}.json"
+    if [ ! -f "${var_file}" ]; then
+      echo "$(basename $0): Invalid template file "${var_file}""
+      exit 127
+    fi
+  fi
+
+  macos_installer="$2"
+  if [ ! -d "${macos_installer}" ]; then
+    echo nope
+    # echo "$(basename $0): macOS installer "${macos_installer}" not found"
+    exit 128
+  fi
+
+  macos_version=$3
+
+  only=${4:-}
+  if [[ -n ${only} ]]; then
+    if [[ ! $only =~ ^(vmware|virtualbox|parallels)$ ]]; then
+      echo "$(basename $0): illegal platform $4"
+      echo "Valid platforms: vmware|virtualbox|parallels"
+      usage
+      exit 1
+    fi
+  fi
+  if [[ "${only}" = "vmware" ]]; then
+    only=vmware-iso
+  elif [[ "${only}" = "virtualbox" ]]; then
+    only=virtualbox-iso
+  elif [[ "${only}" = "parallels" ]]; then
+    only=parallels-iso
+  fi
+  if [ -n "${only}" ]; then
+    only="-only=${only}"      
+  fi
+  packer_template=${5:-macos.json}
+}
+
+# main
+args "$@"
+
+for f in dmg/*${macos_version}*; do
+  if [ ! -f "$f" ]; then
+    mkdir -p dmg
+    prepare_iso/prepare_iso.sh "#{macos_installer}" dmg
+  fi
+
+  break
+done
+
+iso_url=$(ls dmg/*${macos_version}*)
+version=$(cat VERSION)
+packer build ${only} -var-file=${var_file} -var "version=${version}" -var "iso_url=${iso_url}" ${packer_template}
