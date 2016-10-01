@@ -123,6 +123,7 @@
         "script/xcode-cli-tools.sh",
         "script/cmtool.sh",
         "script/add-network-interface-detection.sh",
+        "script/energy.sh",
         "script/autologin.sh",
         "script/update.sh",
         "script/minimize.sh"
