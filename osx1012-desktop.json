@@ -1,0 +1,13 @@
+{
+  "_comment": "Build with `packer build -var-file=osx1012-desktop.json osx.json`",
+  "vm_name": "osx1012-desktop",
+  "desktop": "true",
+  "cpus": "1",
+  "disk_size": "62536",
+  "iso_url": "dmg/OSX_InstallESD_10.12_16A323.dmg",
+  "memory": "4096",
+  "parallels_guest_os_type": "win-8",
+  "vagrantfile_template": "tpl/vagrantfile-osx1012-desktop.tpl",
+  "virtualbox_guest_os_type": "MacOS1012_64",
+  "vmware_guest_os_type": "darwin16-64"
+}

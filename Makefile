@@ -8,12 +8,14 @@ MAC_OSX_10_8_MOUNTAIN_LION_INSTALLER ?= iso/OS\ X\ Mountain\ Lion/Install\ OS\ X
 MAC_OSX_10_9_MAVERICKS_INSTALLER ?= iso/OS\ X\ Mavericks/Install\ OS\ X\ Mavericks.app
 MAC_OSX_10_10_YOSEMITE_INSTALLER ?= iso/Install\ OS\ X\ Yosemite.app
 MAC_OSX_10_11_EL_CAPITAN_INSTALLER ?= iso/Install\ OS\ X\ El\ Capitan.app
+MAC_OSX_10_12_SIERRA_INSTALLER ?= iso/Install\ macOS\ Sierra.app
 
 MAC_OSX_10_7_LION_BOOT_DMG ?= $(notdir $(firstword $(wildcard dmg/OSX_InstallESD_10.7*) ))
 MAC_OSX_10_8_MOUNTAIN_LION_BOOT_DMG ?= $(notdir $(firstword $(wildcard dmg/OSX_InstallESD_10.8*) ))
 MAC_OSX_10_9_MAVERICKS_BOOT_DMG ?= $(notdir $(firstword $(wildcard dmg/OSX_InstallESD_10.9*) ))
 MAC_OSX_10_10_YOSEMITE_BOOT_DMG ?= $(notdir $(firstword $(wildcard dmg/OSX_InstallESD_10.10*) ))
 MAC_OSX_10_11_EL_CAPITAN_BOOT_DMG ?= $(notdir $(firstword $(wildcard dmg/OSX_InstallESD_10.11*) ))
+MAC_OSX_10_12_SIERRA_BOOT_DMG ?= $(notdir $(firstword $(wildcard dmg/OSX_InstallESD_10.12*) ))
 
 # Possible values for CM: (nocm | chef | chefdk | salt | puppet)
 CM ?= nocm
@@ -148,6 +150,20 @@ dmg/$(MAC_OSX_10_11_EL_CAPITAN_BOOT_DMG): $(MAC_OSX_10_11_EL_CAPITAN_INSTALLER)
 	mkdir -p dmg
 	sudo prepare_iso/prepare_iso.sh $(MAC_OSX_10_11_EL_CAPITAN_INSTALLER) dmg
 
+dmg/$(MAC_OSX_10_12_SIERRA_BOOT_DMG): $(MAC_OSX_10_12_SIERRA_INSTALLER)
+	mkdir -p dmg
+	sudo prepare_iso/prepare_iso.sh $(MAC_OSX_10_12_SIERRA_INSTALLER) dmg
+
+$(VMWARE_BOX_DIR)/osx1012$(BOX_SUFFIX): osx1012.json $(SOURCES) dmg/$(MAC_OSX_10_12_SIERRA_BOOT_DMG)
+	rm -rf $(VMWARE_OUTPUT)
+	mkdir -p $(VMWARE_BOX_DIR)
+	$(PACKER) build -only=$(VMWARE_BUILDER) $(PACKER_VARS) -var "iso_url=dmg/$(MAC_OSX_10_12_SIERRA_BOOT_DMG)" -var-file=$< osx.json
+
+$(VMWARE_BOX_DIR)/osx1012-desktop$(BOX_SUFFIX): osx1012-desktop.json $(SOURCES) tpl/vagrantfile-osx1011-desktop.tpl dmg/$(MAC_OSX_10_12_SIERRA_BOOT_DMG)
+	rm -rf $(VMWARE_OUTPUT)
+	mkdir -p $(VMWARE_BOX_DIR)
+	$(PACKER) build -only=$(VMWARE_BUILDER) $(PACKER_VARS) -var "iso_url=dmg/$(MAC_OSX_10_12_SIERRA_BOOT_DMG)" -var-file=$< osx.json
+
 $(VMWARE_BOX_DIR)/osx1011$(BOX_SUFFIX): osx1011.json $(SOURCES) dmg/$(MAC_OSX_10_11_EL_CAPITAN_BOOT_DMG)
 	rm -rf $(VMWARE_OUTPUT)
 	mkdir -p $(VMWARE_BOX_DIR)
@@ -198,6 +214,16 @@ $(VMWARE_BOX_DIR)/osx107-desktop$(BOX_SUFFIX): osx107-desktop.json $(SOURCES) tp
 	mkdir -p $(VMWARE_BOX_DIR)
 	$(PACKER) build -only=$(VMWARE_BUILDER) $(PACKER_VARS) -var "iso_url=dmg/$(MAC_OSX_10_7_LION_BOOT_DMG)" $<
 
+$(VIRTUALBOX_BOX_DIR)/osx1012$(BOX_SUFFIX): osx1012.json $(SOURCES) dmg/$(MAC_OSX_10_12_SIERRA_BOOT_DMG)
+	rm -rf $(VIRTUALBOX_OUTPUT)
+	mkdir -p $(VIRTUALBOX_BOX_DIR)
+	$(PACKER) build -only=$(VIRTUALBOX_BUILDER) $(PACKER_VARS) -var "iso_url=dmg/$(MAC_OSX_10_12_SIERRA_BOOT_DMG)" $<
+
+$(VIRTUALBOX_BOX_DIR)/osx1012-desktop$(BOX_SUFFIX): osx1012-desktop.json $(SOURCES) tpl/vagrantfile-osx1011-desktop.tpl dmg/$(MAC_OSX_10_12_SIERRA_BOOT_DMG)
+	rm -rf $(VIRTUALBOX_OUTPUT)
+	mkdir -p $(VIRTUALBOX_BOX_DIR)
+	$(PACKER) build -only=$(VIRTUALBOX_BUILDER) $(PACKER_VARS) -var "iso_url=dmg/$(MAC_OSX_10_12_SIERRA_BOOT_DMG)" $<
+
 $(VIRTUALBOX_BOX_DIR)/osx1011$(BOX_SUFFIX): osx1011.json $(SOURCES) dmg/$(MAC_OSX_10_11_EL_CAPITAN_BOOT_DMG)
 	rm -rf $(VIRTUALBOX_OUTPUT)
 	mkdir -p $(VIRTUALBOX_BOX_DIR)
@@ -247,6 +273,16 @@ $(VIRTUALBOX_BOX_DIR)/osx107-desktop$(BOX_SUFFIX): osx107-desktop.json $(SOURCES
 	rm -rf $(VIRTUALBOX_OUTPUT)
 	mkdir -p $(VIRTUALBOX_BOX_DIR)
 	$(PACKER) build -only=$(VIRTUALBOX_BUILDER) $(PACKER_VARS) -var "iso_url=dmg/$(MAC_OSX_10_7_LION_BOOT_DMG)" $<
+
+$(PARALLELS_BOX_DIR)/osx1012$(BOX_SUFFIX): osx1012.json $(SOURCES) dmg/$(MAC_OSX_10_12_SIERRA_BOOT_DMG)
+	rm -rf $(PARALLELS_OUTPUT)
+	mkdir -p $(PARALLELS_BOX_DIR)
+	$(PACKER) build -only=$(PARALLELS_BUILDER) $(PACKER_VARS) -var "iso_url=dmg/$(MAC_OSX_10_12_SIERRA_BOOT_DMG)" $<
+
+$(PARALLELS_BOX_DIR)/osx1012-desktop$(BOX_SUFFIX): osx1012-desktop.json $(SOURCES) tpl/vagrantfile-osx1011-desktop.tpl dmg/$(MAC_OSX_10_12_SIERRA_BOOT_DMG)
+	rm -rf $(PARALLELS_OUTPUT)
+	mkdir -p $(PARALLELS_BOX_DIR)
+	$(PACKER) build -only=$(PARALLELS_BUILDER) $(PACKER_VARS) -var "iso_url=dmg/$(MAC_OSX_10_12_SIERRA_BOOT_DMG)" $<
 
 $(PARALLELS_BOX_DIR)/osx1011$(BOX_SUFFIX): osx1011.json $(SOURCES) dmg/$(MAC_OSX_10_11_EL_CAPITAN_BOOT_DMG)
 	rm -rf $(PARALLELS_OUTPUT)
