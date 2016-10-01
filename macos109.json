@@ -1,13 +1,13 @@
 {
-  "_comment": "Build with `packer build -var-file=osx109.json osx.json`",
-  "vm_name": "osx109",
-  "desktop": "false",
+  "_comment": "Build with `packer build -var-file=macos109.json macos.json`",
+  "vm_name": "macos109",
+  "desktop": "true",
   "cpus": "1",
-  "disk_size": "64000",
+  "disk_size": "32000",
   "iso_url": "dmg/OSX_InstallESD_10.9_13A603.dmg",
   "memory": "2048",
   "parallels_guest_os_type": "win-8",
-  "vagrantfile_template": "",
+  "vagrantfile_template": "tpl/vagrantfile-macos109.tpl",
   "virtualbox_guest_os_type": "MacOS109_64",
   "vmware_guest_os_type": "darwin13-64"
 }

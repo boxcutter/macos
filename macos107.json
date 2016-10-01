@@ -1,13 +1,13 @@
 {
-  "_comment": "Build with `packer build -var-file=osx107-desktop.json osx.json`",
-  "vm_name": "osx107-desktop",
+  "_comment": "Build with `packer build -var-file=macos107.json macos.json`",
+  "vm_name": "macos107",
   "desktop": "true",
   "cpus": "1",
   "disk_size": "64000",
   "iso_url": "dmg/OSX_InstallESD_10.7.5_11G63.dmg",
   "memory": "2048",
   "parallels_guest_os_type": "win-8",
-  "vagrantfile_template": "tpl/vagrantfile-osx107-desktop.tpl",
+  "vagrantfile_template": "tpl/vagrantfile-macos107.tpl",
   "virtualbox_guest_os_type": "MacOS107_64",
   "vmware_guest_os_type": "darwin11-64"
 }

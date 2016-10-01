@@ -1,13 +1,13 @@
 {
-  "_comment": "Build with `packer build -var-file=osx1011.json osx.json`",
-  "vm_name": "osx1011",
-  "desktop": "false",
+  "_comment": "Build with `packer build -var-file=macos1011.json macos.json`",
+  "vm_name": "macos1011",
+  "desktop": "true",
   "cpus": "1",
-  "disk_size": "64000",
+  "disk_size": "62536",
   "iso_url": "dmg/OSX_InstallESD_10.11_15A284.dmg",
   "memory": "4096",
   "parallels_guest_os_type": "win-8",
-  "vagrantfile_template": "",
+  "vagrantfile_template": "tpl/vagrantfile-macos1011.tpl",
   "virtualbox_guest_os_type": "MacOS1011_64",
   "vmware_guest_os_type": "darwin15-64"
 }

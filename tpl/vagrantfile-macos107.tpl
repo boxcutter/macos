@@ -2,9 +2,9 @@
 # vi: set ft=ruby :
 
 Vagrant.configure("2") do |config|
-    config.vm.define "vagrant-osx108-desktop"
-    config.vm.box = "osx108-desktop"
- 
+    config.vm.define "vagrant-macos107"
+    config.vm.box = "macos107"
+
     config.vm.provider :virtualbox do |v, override|
       v.gui = true
       v.customize ["modifyvm", :id, "--audiocontroller", "hda"]

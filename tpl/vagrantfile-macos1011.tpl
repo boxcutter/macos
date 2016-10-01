@@ -2,8 +2,8 @@
 # vi: set ft=ruby :
 
 Vagrant.configure("2") do |config|
-    config.vm.define "vagrant-osx1010-desktop"
-    config.vm.box = "osx1010-desktop"
+    config.vm.define "vagrant-macos1011"
+    config.vm.box = "macos1011"
  
     ["vmware_fusion", "vmware_workstation"].each do |provider|
         config.vm.provider provider do |v, override|

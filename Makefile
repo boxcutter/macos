@@ -8,12 +8,14 @@ MAC_OSX_10_8_MOUNTAIN_LION_INSTALLER ?= iso/OS\ X\ Mountain\ Lion/Install\ OS\ X
 MAC_OSX_10_9_MAVERICKS_INSTALLER ?= iso/OS\ X\ Mavericks/Install\ OS\ X\ Mavericks.app
 MAC_OSX_10_10_YOSEMITE_INSTALLER ?= iso/Install\ OS\ X\ Yosemite.app
 MAC_OSX_10_11_EL_CAPITAN_INSTALLER ?= iso/Install\ OS\ X\ El\ Capitan.app
+MACOS_10_12_SIERRA_INSTALLER ?= iso/Install\ macOS\ Sierra.app
 
 MAC_OSX_10_7_LION_BOOT_DMG ?= $(notdir $(firstword $(wildcard dmg/OSX_InstallESD_10.7*) ))
 MAC_OSX_10_8_MOUNTAIN_LION_BOOT_DMG ?= $(notdir $(firstword $(wildcard dmg/OSX_InstallESD_10.8*) ))
 MAC_OSX_10_9_MAVERICKS_BOOT_DMG ?= $(notdir $(firstword $(wildcard dmg/OSX_InstallESD_10.9*) ))
 MAC_OSX_10_10_YOSEMITE_BOOT_DMG ?= $(notdir $(firstword $(wildcard dmg/OSX_InstallESD_10.10*) ))
 MAC_OSX_10_11_EL_CAPITAN_BOOT_DMG ?= $(notdir $(firstword $(wildcard dmg/OSX_InstallESD_10.11*) ))
+MACOS_10_12_SIERRA_BOOT_DMG ?= $(notdir $(firstword $(wildcard dmg/OSX_InstallESD_10.11*) ))
 
 # Possible values for CM: (nocm | chef | chefdk | salt | puppet)
 CM ?= nocm
@@ -147,6 +149,10 @@ dmg/$(MAC_OSX_10_10_YOSEMITE_BOOT_DMG): $(MAC_OSX_10_10_YOSEMITE_INSTALLER)
 dmg/$(MAC_OSX_10_11_EL_CAPITAN_BOOT_DMG): $(MAC_OSX_10_11_EL_CAPITAN_INSTALLER)
 	mkdir -p dmg
 	sudo prepare_iso/prepare_iso.sh $(MAC_OSX_10_11_EL_CAPITAN_INSTALLER) dmg
+
+dmg/$(MACOS_10_12_SIERRA_BOOT_DMG): $(MACOS_10_12_SIERRA_INSTALLER) dmg
+	mkdir -p dmg
+	sudo prepare_iso/prepare_iso.sh $(MACOSX_10_12_SIERRA_INSTALLER) dmg
 
 $(VMWARE_BOX_DIR)/osx1011$(BOX_SUFFIX): osx1011.json $(SOURCES) dmg/$(MAC_OSX_10_11_EL_CAPITAN_BOOT_DMG)
 	rm -rf $(VMWARE_OUTPUT)
