@@ -104,8 +104,7 @@ all providers:
 
 Or if you just want to build Mac OS X El Capitan for VMware Fusion:
 
-    $ bin/box build osx1011 /Applications/Install\ OS\ X\ El\ Capitan.app/ 10.
-11 vmware
+    $ bin/box build osx1011 /Applications/Install\ OS\ X\ El\ Capitan.app/ 10.11 vmware
 
 ## Building the Vagrant boxes with the Makefile
 
