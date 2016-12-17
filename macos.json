@@ -12,6 +12,7 @@
       "skip_compaction": true,
       "ssh_password": "{{ user `ssh_password` }}",
       "ssh_port": 22,
+      "ssh_timeout": "10000s",
       "ssh_username": "{{ user `ssh_username` }}",
       "ssh_wait_timeout": "10000s",
       "tools_upload_flavor": "darwin",
@@ -127,9 +128,26 @@
         "script/update.sh",
         "script/update.sh",
         "script/update.sh",
-        "script/update.sh",
+        "script/update.sh"
+      ],
+      "type": "shell"
+    },
+    {
+      "environment_vars": [
+        "AUTOLOGIN={{user `autologin`}}",
+        "CM={{user `cm`}}",
+        "CM_VERSION={{user `cm_version`}}",
+        "UPDATE={{user `update`}}",
+        "INSTALL_XCODE_CLI_TOOLS={{user `install_xcode_cli_tools`}}",
+        "INSTALL_VAGRANT_KEYS={{user `install_vagrant_keys`}}",
+        "SSH_USERNAME={{ user `ssh_username` }}",
+        "SSH_PASSWORD={{ user `ssh_password` }}"
+      ],
+      "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E -S bash '{{ .Path }}'",
+      "scripts": [
         "script/minimize.sh"
       ],
+      "start_retry_timeout": "10000s",
       "type": "shell"
     }
   ],
