@@ -125,6 +125,9 @@
         "script/energy.sh",
         "script/autologin.sh",
         "script/update.sh",
+        "script/update.sh",
+        "script/update.sh",
+        "script/update.sh",
         "script/minimize.sh"
       ],
       "type": "shell"
