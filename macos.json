@@ -41,6 +41,7 @@
       "iso_interface": "sata",
       "iso_url": "{{ user `iso_url` }}",
       "output_directory": "output-{{ user `vm_name` }}-virtualbox-iso",
+      "post_shutdown_delay": "1m",
       "shutdown_command": "echo '{{ user `ssh_username` }}'|sudo -S shutdown -h now",
       "ssh_password": "{{ user `ssh_password` }}",
       "ssh_port": 22,
