@@ -116,6 +116,7 @@
         "SSH_PASSWORD={{ user `ssh_password` }}"
       ],
       "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E -S bash '{{ .Path }}'",
+      "expect_disconnect": true,
       "scripts": [
         "script/vagrant.sh",
         "script/vmware.sh",
