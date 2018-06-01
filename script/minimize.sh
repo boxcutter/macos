@@ -24,5 +24,7 @@ diskutil secureErase freespace 0 ${slash}
 # VMware Fusion specific items
 if [ -e .vmfusion_version ] || [[ "$PACKER_BUILDER_TYPE" == vmware* ]]; then
     # Shrink the disk
-    /Library/Application\ Support/VMware\ Tools/vmware-tools-cli disk shrink /
+    if [ -e /Library/Application\ Support/VMware\ Tools/vmware-tools-cli ]; then
+        /Library/Application\ Support/VMware\ Tools/vmware-tools-cli disk shrink /
+    fi
 fi
