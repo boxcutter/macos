@@ -142,6 +142,7 @@
         "SSH_PASSWORD={{ user `ssh_password` }}"
       ],
       "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E -S bash '{{ .Path }}'",
+      "expect_disconnect": true,
       "scripts": [
         "script/minimize.sh"
       ],
@@ -168,4 +169,3 @@
     "vmware_guest_os_type": "darwin15-64"
   }
 }
-
