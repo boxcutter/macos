@@ -2,6 +2,7 @@
 
 echo "==> 'Disabling screensaver'"
 defaults -currentHost write com.apple.screensaver idleTime 0
+su $SSH_USERNAME -c "defaults -currentHost write com.apple.screensaver idleTime 0"
 echo "==> 'Disabling login screensaver'"
 defaults -currentHost write com.apple.screensaver loginWindowIdleTime 0
 echo "==> 'Turning off energy saving'"
