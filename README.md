@@ -1,8 +1,8 @@
-# Packer templates in JSON for macOS
+# Packer templates for macOS written in legacy JSON
 
 ### Overview
 
-This repository contains [Packer](https://packer.io/) templates written in JSON for creating
+This repository contains [Packer](https://packer.io/) templates written in legacy JSON for creating
 macOS Vagrant boxes.
 
 You must supply your own install media and build these boxes on your own using
